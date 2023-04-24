@@ -11,4 +11,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
+// We have left the layout implementation
