@@ -97,7 +97,9 @@ fun loginScreen(){
             Text(
                 text="Login",
                 textAlign = TextAlign.Center,
+
                 modifier = Modifier.width(150.dp)
+
             )
         }
     }
