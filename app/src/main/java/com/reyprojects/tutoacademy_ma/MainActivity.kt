@@ -41,6 +41,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +57,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 
 
 class MainActivity : ComponentActivity() {
@@ -78,6 +80,16 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun loginScreen(){
+    var currentImage by remember { mutableStateOf(R.drawable.logo) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            currentImage = R.drawable.logo
+            delay(4000)
+            currentImage = R.drawable.logo_fancy
+            delay(2000)
+        }
+    }
 
     Box(
 
@@ -92,7 +104,8 @@ fun loginScreen(){
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Image(
-                painterResource(R.drawable.logo),
+                //painterResource(R.drawable.logo),
+                painterResource(currentImage),
                 contentDescription = null,
                 modifier = Modifier
                     .height(247.dp)
