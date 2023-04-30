@@ -38,7 +38,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +54,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 
 
 class MainActivity : ComponentActivity() {
@@ -60,14 +64,14 @@ class MainActivity : ComponentActivity() {
 
         setContent{
             Surface(modifier = Modifier.fillMaxSize()){
-                //messageCard(Message("pepe","uwu"))
+
                 setContent{
                     loginScreen()
                 }
             }
 
         }
-        //setContentView(R.layout.login)
+
     }
 }
 
@@ -78,7 +82,8 @@ fun loginScreen(){
     Box(
 
         modifier = Modifier
-            .fillMaxSize().background(Color.White)
+            .fillMaxSize()
+            .background(Color.White)
 
     ){
 
@@ -93,14 +98,53 @@ fun loginScreen(){
                     .height(247.dp)
                     .width(322.dp)
             )
-
+            Spacer(modifier = Modifier.height(25.dp))
             Text(
                 text="Login",
                 textAlign = TextAlign.Center,
-
-                modifier = Modifier.width(150.dp)
-
+                fontSize =  30.sp,
+                color = Color.Gray,
+                modifier = Modifier
+                    .width(150.dp)
             )
+
+            Spacer(modifier = Modifier.height(25.dp))
+
+            Button(
+                onClick = { /*TODO*/ },
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.padding(20.dp)
+            ) {
+
+                Image(
+                    painterResource(id = R.drawable.ic_google),
+                    contentDescription ="google button icon",
+                    modifier = Modifier.size(23.dp)
+                )
+                Spacer(modifier = Modifier.width(15.dp))
+                Text(text = "Inicia sesión con",
+                    color = Color.White,
+                    fontSize =  15.sp,
+                    modifier = Modifier.padding(10.dp)
+                )
+                Text(text = "Google",
+                    color = Color(251,196,3),
+                    fontSize =  15.sp,
+
+                )
+
+            }
+            Spacer(modifier = Modifier.height(25.dp))
+
+            Text(
+                text="Bienvenido a la versión Móvil de nuestra App, consulta tutorías y ofrece tus servicios académicos donde quieras y cuando quieras!",
+                textAlign = TextAlign.Center,
+                fontSize =  22.sp,
+                color = Color.Black,
+                modifier = Modifier.width(300.dp)
+            )
+
         }
     }
 }
