@@ -1,5 +1,6 @@
 package com.reyprojects.tutoacademy_ma
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +28,10 @@ import androidx.compose.ui.unit.dp
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.text.Layout
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -57,8 +62,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContentProviderCompat.requireContext
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.delay
-
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
+import androidx.navigation.compose.*
+import java.util.Arrays.toString
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,9 +84,18 @@ class MainActivity : ComponentActivity() {
         setContent{
             Surface(modifier = Modifier.fillMaxSize()){
 
-                setContent{
-                    loginScreen()
-                }
+                    val navController = rememberNavController()
+
+                    NavHost(navController, startDestination = "login") {
+                        composable("login") {
+                            loginScreen(navController)
+                        }
+                        composable("home") {
+                            homeScreene()
+                        }
+                    }
+
+
             }
 
         }
@@ -79,9 +105,38 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun loginScreen(){
-    var currentImage by remember { mutableStateOf(R.drawable.logo) }
+fun loginScreen(
+    navController: NavHostController,
+    viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+){
 
+    val token = "323525790152-hcd861ki1ffoeian63vbhvilouj9skou.apps.googleusercontent.com"
+    val context = LocalContext.current
+    var currentImage by remember { mutableStateOf(R.drawable.logo) }
+    val launcher = rememberLauncherForActivityResult(
+        contract =
+        ActivityResultContracts.StartActivityForResult()
+    ){
+        val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        try{
+            val account = task.getResult(ApiException::class.java)
+
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            viewModel.signInWithGoogleCredential(credential){
+                Log.d("TutoacademyMa","All good")
+                Log.d("TutoacademyMa","Family name: "+account.familyName.toString())
+                Log.d("TutoacademyMa","Email: "+account.email.toString())
+                Log.d("TutoacademyMa","First name: "+account.displayName.toString())
+                Log.d("TutoacademyMa","Google id: "+account.id.toString())
+                Log.d("TutoacademyMa","Image url: "+account.photoUrl.toString())
+
+
+                navController.navigate("home")
+            }
+        }catch(e: Exception){
+            Log.d("TutoacademyMa","Something wrong")
+        }
+    }
     LaunchedEffect(Unit) {
         while (true) {
             currentImage = R.drawable.logo
@@ -124,7 +179,18 @@ fun loginScreen(){
             Spacer(modifier = Modifier.height(25.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+
+                    val options = GoogleSignInOptions.Builder(
+                        GoogleSignInOptions.DEFAULT_SIGN_IN
+                    )
+                        .requestIdToken(token)
+                        .requestEmail()
+                        .build()
+                    val GoogleSignInClient = GoogleSignIn.getClient(context, options)
+                    launcher.launch(GoogleSignInClient.signInIntent)
+
+                },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier.padding(20.dp)
@@ -161,169 +227,10 @@ fun loginScreen(){
         }
     }
 }
-/*
-
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent{
-            Surface(modifier = Modifier.fillMaxSize()){
-                //messageCard(Message("pepe","uwu"))
-                Conversation(SampleData.conversationSample)
-            }
-
-        }
-        //setContentView(R.layout.login)
-    }
-}
-
-data class Message(val author: String, val body: String )
 
 @Composable
-fun MessageCard(msg: Message) {
-    Row(modifier = Modifier.padding(all = 8.dp)) {
-        Image(
-            painter = painterResource(R.drawable.logo),
-            contentDescription = null,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .border(1.5.dp, MaterialTheme.colors.secondaryVariant, CircleShape)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-
-        // We keep track if the message is expanded or not in this
-        // variable
-        var isExpanded by remember { mutableStateOf(false) }
-        // surfaceColor will be updated gradually from one color to the other
-        val surfaceColor by animateColorAsState(
-            if (isExpanded) MaterialTheme.colors.primaryVariant else MaterialTheme.colors.surface,
-        )
-
-        // We toggle the isExpanded variable when we click on this Column
-        Column(modifier = Modifier.clickable { isExpanded = !isExpanded }) {
-            Text(
-                text = msg.author,
-                color = MaterialTheme.colors.secondaryVariant,
-                style = MaterialTheme.typography.subtitle2
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Surface(
-                shape = MaterialTheme.shapes.medium,
-                elevation = 1.dp,
-                // surfaceColor color will be changing gradually from primary to surface
-                color = surfaceColor,
-                // animateContentSize will change the Surface size gradually
-                modifier = Modifier.animateContentSize().padding(1.dp)
-            ) {
-                Text(
-                    text = msg.body,
-                    modifier = Modifier.padding(all = 4.dp),
-                    // If the message is expanded, we display all its content
-                    // otherwise we only display the first line
-                    maxLines = if (isExpanded) Int.MAX_VALUE else 1,
-                    style = MaterialTheme.typography.body2
-                )
-            }
-        }
+fun homeScreene(){
+    Row{
+        Text("This is Home")
     }
 }
-@Composable
-fun Conversation(messages : List <Message>){
-    LazyColumn{
-        items(messages){ message ->
-            MessageCard(message)
-        }
-    }
-}
-
-
-
-@Preview(name = "Light Mode")
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
-@Preview
-@Composable
-fun PreviewMessageCard(){
-    MessageCard(msg = Message("yo","my content"))
-}
-
-// We have left the layout implementation
-object SampleData {
-    // Sample conversation data
-    val conversationSample = listOf(
-        Message(
-            "Colleague",
-            "Test...Test...Test..."
-        ),
-        Message(
-            "Colleague",
-            "List of Android versions:\n" +
-                    "Android KitKat (API 19)\n" +
-                    "Android Lollipop (API 21)\n" +
-                    "Android Marshmallow (API 23)\n" +
-                    "Android Nougat (API 24)\n" +
-                    "Android Oreo (API 26)\n" +
-                    "Android Pie (API 28)\n" +
-                    "Android 10 (API 29)\n" +
-                    "Android 11 (API 30)\n" +
-                    "Android 12 (API 31)\n"
-        ),
-        Message(
-            "Colleague",
-            "I think Kotlin is my favorite programming language.\n" +
-                    "It's so much fun!"
-        ),
-        Message(
-            "Colleague",
-            "Searching for alternatives to XML layouts..."
-        ),
-        Message(
-            "Colleague",
-            "Hey, take a look at Jetpack Compose, it's great!\n" +
-                    "It's the Android's modern toolkit for building native UI." +
-                    "It simplifies and accelerates UI development on Android." +
-                    "Less code, powerful tools, and intuitive Kotlin APIs :)"
-        ),
-        Message(
-            "Colleague",
-            "It's available from API 21+ :)"
-        ),
-        Message(
-            "Colleague",
-            "Writing Kotlin for UI seems so natural, Compose where have you been all my life?"
-        ),
-        Message(
-            "Colleague",
-            "Android Studio next version's name is Arctic Fox"
-        ),
-        Message(
-            "Colleague",
-            "Android Studio Arctic Fox tooling for Compose is top notch ^_^"
-        ),
-        Message(
-            "Colleague",
-            "I didn't know you can now run the emulator directly from Android Studio"
-        ),
-        Message(
-            "Colleague",
-            "Compose Previews are great to check quickly how a composable layout looks like"
-        ),
-        Message(
-            "Colleague",
-            "Previews are also interactive after enabling the experimental setting"
-        ),
-        Message(
-            "Colleague",
-            "Have you tried writing build.gradle with KTS?"
-        ),
-    )
-}
-
- */

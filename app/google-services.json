@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "323525790152",
+    "project_id": "tutoacademyma",
+    "storage_bucket": "tutoacademyma.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323525790152:android:db6053d23fb81b11eb18fd",
+        "android_client_info": {
+          "package_name": "com.reyprojects.tutoacademy_ma"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323525790152-7c0p6vp1bi23mp6csck4iofgpe6a7lc4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reyprojects.tutoacademy_ma",
+            "certificate_hash": "3b813f4319ea5ae11338d3543ca701726dcefda7"
+          }
+        },
+        {
+          "client_id": "323525790152-hcd861ki1ffoeian63vbhvilouj9skou.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnQfSp90Esu12AFquW4BTe5ylSHJVUMKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323525790152-hcd861ki1ffoeian63vbhvilouj9skou.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
