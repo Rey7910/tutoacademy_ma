@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -46,26 +48,21 @@ class MainActivity : ComponentActivity() {
 fun PantallaPrincipal(){
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
-    val contextForToast = LocalContext.current.applicationContext
+    val navController = rememberNavController()
 
     Scaffold(
 
         scaffoldState = scaffoldState,
         topBar = {TopBar(scope, scaffoldState)},
-        drawerContent = {  DrawerContent { itemLabel ->
-            Toast
-                .makeText(contextForToast, itemLabel, Toast.LENGTH_SHORT)
-                .show()
-            scope.launch {
-                // delay for the ripple effect
-                delay(timeMillis = 250)
-                scaffoldState.drawerState.close()
-            }
-        }
+        drawerContent = {  DrawerContent(
+            scope,
+            scaffoldState,
+            navController
+        )
         },
         backgroundColor = colorResource(id = R.color.background)
     ){ it
-
+        NavigationHost(navController)
     }
 
 }
@@ -96,8 +93,11 @@ fun TopBar(
 
 @Composable
 private fun DrawerContent(
-    itemClick: (String) -> Unit
+    scope: CoroutineScope,
+    scaffoldState: ScaffoldState,
+    navController: NavHostController
 ) {
+
 
     val itemsList = prepareNavigationDrawerItems()
 
@@ -141,8 +141,13 @@ private fun DrawerContent(
         }
 
         items(itemsList) { item ->
-            NavigationListItem(item = item) {
-                itemClick(item.label)
+            NavigationListItem(item = item){
+                navController.navigate(item.Route){
+                    launchSingleTop = true
+                }
+                scope.launch {
+                    scaffoldState.drawerState.close()
+                }
             }
         }
     }
@@ -150,19 +155,20 @@ private fun DrawerContent(
 @Composable
 private fun NavigationListItem(
     item: NavigationDrawerItem,
-    itemClick: () -> Unit
+    onItemClick: (NavigationDrawerItem) -> Unit
 ) {
     TextButton(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                itemClick()
             },
-        onClick = {}
+        onClick = { onItemClick( item )}
     ) {
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(15.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp)
         ) {
             Icon(
                 modifier = Modifier
@@ -193,32 +199,37 @@ private fun prepareNavigationDrawerItems(): List<NavigationDrawerItem> {
 
     itemsList.add(
         NavigationDrawerItem(
-            image = painterResource(id = R.drawable.begin),
-            label = "Inicio"
+            image = painterResource(id = Destinos.Pantalla1.image),
+            label = Destinos.Pantalla1.title,
+            Route = Destinos.Pantalla1.ruta
         )
     )
     itemsList.add(
         NavigationDrawerItem(
-            image = painterResource(id = R.drawable.ic_profile),
-            label = "Perfil"
+            image = painterResource(id = Destinos.Pantalla2.image),
+            label = Destinos.Pantalla2.title,
+            Route = Destinos.Pantalla2.ruta
         )
     )
     itemsList.add(
         NavigationDrawerItem(
-            image = painterResource(id = R.drawable.calendar),
-            label = "Mis tutorias"
+            image = painterResource(id = Destinos.Pantalla3.image),
+            label = Destinos.Pantalla3.title,
+            Route = Destinos.Pantalla3.ruta
         )
     )
     itemsList.add(
         NavigationDrawerItem(
-            image = painterResource(id = R.drawable.chat),
-            label = "Chats",
+            image = painterResource(id = Destinos.Pantalla4.image),
+            label = Destinos.Pantalla4.title,
+            Route = Destinos.Pantalla4.ruta
         )
     )
     itemsList.add(
         NavigationDrawerItem(
             image = painterResource(id = R.drawable.logout),
-            label = "Cerrar Sesión"
+            label = "Cerrar Sesión",
+            Route = "pantalla1"
         )
     )
 
@@ -228,4 +239,5 @@ private fun prepareNavigationDrawerItems(): List<NavigationDrawerItem> {
 data class NavigationDrawerItem(
     val image: Painter,
     val label: String,
+    val Route: String,
 )
