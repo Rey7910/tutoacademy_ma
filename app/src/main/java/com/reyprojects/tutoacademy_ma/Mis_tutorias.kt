@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun Mis_tutorias(){
-    Column() {
+    Column {
         Text("Aqui van las tutorías")
     }
 }

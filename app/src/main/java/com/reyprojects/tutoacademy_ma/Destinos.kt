@@ -1,8 +1,5 @@
 package com.reyprojects.tutoacademy_ma
 
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
-
 
 sealed class Destinos(
     val image : Int,
