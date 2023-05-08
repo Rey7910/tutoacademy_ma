@@ -1,0 +1,13 @@
+query getUsers {
+    getUsers {
+        _id
+        googleId
+        givenName
+        familyName
+        email
+        imageUrl
+        authStatus
+        createdAt
+        updatedAt
+    }
+}

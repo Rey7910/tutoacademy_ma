@@ -1,0 +1,33 @@
+type user {
+    _id: String ,
+    googleId: String!,
+    givenName: String!,
+    familyName: String!,
+    email: String!,
+    imageUrl: String!,
+    authStatus: Boolean!,
+    createdAt: String,
+    updatedAt: String
+
+}
+input userInput {
+    _id: String,
+    googleId: String!,
+    givenName: String!,
+    familyName: String!,
+    email: String!,
+    imageUrl: String!,
+    authStatus: Boolean!,
+    createdAt: String,
+    updatedAt: String
+}
+
+type Query{
+    getUsers: [user]
+    getUserId(id: String!): user
+}
+
+type Mutation{
+    loginUser(user: userInput!): user
+    logoutUser (id: String!): user
+}

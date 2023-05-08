@@ -2,6 +2,13 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
+    id("com.apollographql.apollo3") version "3.8.1"
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.reyprojects.tutoacademy_ma")
+    }
 }
 
 android {
@@ -75,7 +82,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
     implementation "androidx.navigation:navigation-compose:2.4.0-alpha10"
-
-
-
+    implementation("com.apollographql.apollo3:apollo-runtime:3.8.1")
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:x.x.x"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
 }

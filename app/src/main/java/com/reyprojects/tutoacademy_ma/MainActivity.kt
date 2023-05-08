@@ -27,6 +27,7 @@ import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.unit.dp
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.text.Layout
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -50,6 +51,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
@@ -75,7 +77,23 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import androidx.navigation.compose.*
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.exception.ApolloException
+import com.google.android.gms.common.api.Response
 import java.util.Arrays.toString
+import com.reyprojects.tutoacademy_ma.GetUsersQuery
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,12 +121,31 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
+fun query_proof() = GlobalScope.async {
+
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl("https://3007-186-84-88-227.ngrok-free.app/graphql")
+            .build()
+        Log.d("Tuto","client builded well")
+        val response = apolloClient.query(GetUsersQuery()).execute()
+        Log.d("Query Response",response.data.toString())
+    }catch (e: ApolloException){
+        Log.d("Query Response",e.toString())
+    }
+
+}
+
+
 
 @Composable
 fun loginScreen(
     navController: NavHostController,
     viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
+
+
 
     val token = "323525790152-hcd861ki1ffoeian63vbhvilouj9skou.apps.googleusercontent.com"
     val context = LocalContext.current
@@ -230,7 +267,46 @@ fun loginScreen(
 
 @Composable
 fun homeScreene(){
+
+    val coroutineScope = rememberCoroutineScope()
+
     Row{
         Text("This is Home")
     }
+
+    Button(
+        onClick = {
+
+            coroutineScope.launch {
+                query_proof().await()
+                println("Proof end")
+            }
+        },
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
+        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier.padding(20.dp)
+    ){
+        Text("query proof")
+    }
+
+
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+fun proof()= GlobalScope.async {
+    val client = OkHttpClient()
+    val url = URL("https://3007-186-84-88-227.ngrok-free.app/graphql")
+    val request = Request.Builder()
+        .url(url)
+        .build()
+
+    val response = client.newCall(request).execute()
+    if (response.isSuccessful) {
+        print("good")
+        print(response)
+    } else {
+        Log.d("MainActivity", "Error al obtener el Pokemon: ")
+        print(response)
+    }
+
 }
