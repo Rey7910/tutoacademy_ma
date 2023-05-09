@@ -1,3 +1,5 @@
+# ------------  User --------------------
+
 query getUsers {
     getUsers {
         _id
@@ -10,4 +12,582 @@ query getUsers {
         createdAt
         updatedAt
     }
+}
+
+query getUserId($id: String!){
+    getUserId(id: $id) {
+        _id
+        googleId
+        givenName
+        familyName
+        email
+        imageUrl
+        authStatus
+        createdAt
+        updatedAt
+    }
+}
+
+mutation loginUser($user: userInput!){
+    loginUser(user: $user){
+        _id
+        googleId
+        givenName
+        familyName
+        email
+        imageUrl
+        authStatus
+        createdAt
+        updatedAt
+    }
+}
+
+# ------------  Profile --------------------
+
+query allProfiles{
+    allProfiles {
+        userID{
+            _id
+            googleId
+            createdAt
+            updatedAt
+        }
+
+        fullname
+        gender
+        birthdate
+        nationality
+        degree
+        description
+        creationdate
+        profilestatus
+        skills{skillname, score}
+        schedule{day, hours}
+    }
+}
+
+query findProfiles($value : String!){
+    findProfiles(value: $value) {
+        userID{
+            _id
+            googleId
+            createdAt
+            updatedAt
+        }
+
+        fullname
+        gender
+        birthdate
+        nationality
+        degree
+        description
+        creationdate
+        profilestatus
+        skills{skillname, score}
+        schedule{day, hours}
+    }
+}
+
+mutation createProfile($profile: profileInput!){
+    createProfile(profile: $profile)
+}
+
+
+mutation updateProfile($profile : profileInput!){
+    updateProfile(profile: $profile)
+}
+
+# ------------  Meet schedule --------------------
+
+query allRequests{
+    allRequests {
+        id
+        user_req{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        tutor{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        message,
+        created_at,
+        scheduled_time,
+        accepted
+    }
+}
+
+
+query requestById($id: Int!) {
+    requestById(id: $id) {
+        id
+        user_req {
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        tutor{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        message,
+        created_at,
+        scheduled_time,
+        accepted
+    }
+}
+
+query allMeetings{
+    allMeetings {
+        id
+        request_id
+        created_at
+        link
+        state
+    }
+}
+
+query meetingById($id: Int!){
+    meetingById(id: $id) {
+        id
+        request_id
+        created_at
+        link
+        state
+    }
+}
+
+query meetingsFromRequestById($request_id:Int!){
+    meetingsFromRequestById(request_id: $request_id) {
+        id
+        request_id
+        created_at
+        link
+        state
+    }
+}
+
+
+mutation createRequest($request: RequestInput!){
+    createRequest  (request: $request)
+}
+
+
+mutation updateRequest($id: Int!,$request: RequestInput!){
+    updateRequest(id: $id, request: $request)
+}
+
+mutation deleteRequest($id: Int!){
+    deleteRequest(id: $id)
+}
+
+mutation createMeeting($id: Int! , $meeting: MeetingInput!) {
+    createMeeting(id: $id , meeting: $meeting) {
+        id
+        request_id
+        created_at
+        link
+        state
+    }
+}
+
+mutation updateMeeting ($id: Int! , $meeting: MeetingInput!){
+    updateMeeting(id: $id, meeting: $meeting) {
+        id
+        request_id
+        created_at
+        link
+        state
+    }
+}
+
+mutation deleteMeeting($id: Int!) {
+    deleteMeeting(id: $id)
+}
+
+# ------------  Tutor Service --------------------
+
+query allAptitudes{
+    allAptitudes{
+        idRate
+        idQualifier{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        service{
+            idService
+            idProfile{
+                userID{
+                    _id
+                    googleId
+                    createdAt
+                    updatedAt
+                }
+
+                fullname
+                gender
+                birthdate
+                nationality
+                degree
+                description
+                creationdate
+                profilestatus
+                skills{skillname, score}
+                schedule{day, hours}
+            }
+            description
+            serviceState
+        }
+        aptitudeName
+        aptitudeRate
+        aptitudeState
+    }
+}
+
+query aptitudeById($id: Int!){
+    aptitudeById(id:$id){
+        idRate
+        idQualifier{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        service{
+            idService
+            idProfile{
+                userID{
+                    _id
+                    googleId
+                    createdAt
+                    updatedAt
+                }
+
+                fullname
+                gender
+                birthdate
+                nationality
+                degree
+                description
+                creationdate
+                profilestatus
+                skills{skillname, score}
+                schedule{day, hours}
+            }
+            description
+            serviceState
+        }
+        aptitudeName
+        aptitudeRate
+        aptitudeState
+    }
+}
+
+
+query allServices{
+    allServices{
+        idService
+        idProfile{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        description
+        serviceState
+    }
+}
+
+query serviceById($id: Int!){
+    serviceById(id:$id){
+        idService
+        idProfile{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        description
+        serviceState
+    }
+}
+
+mutation createService($service: ServiceInput!){
+    createService(service:$service)
+}
+
+mutation updateService($id:Int!,$service: ServiceInput!){
+    updateService(id: $id, service:$service)
+}
+
+mutation deleteService($id: Int!){
+    deleteService(id:$id)
+}
+
+mutation createAptitude($aptitude: AptitudeInput!){
+    createAptitude(aptitude:$aptitude)
+}
+
+
+mutation updateAptitude($id: Int!,$aptitude: AptitudeInput!){
+    updateAptitude(id: $id, aptitude:$aptitude)
+}
+
+mutation deleteAptitude($id: Int!){
+    deleteAptitude(id:$id)
+}
+
+# ------------  Chat --------------------
+
+query getChats{
+    getChats {
+        chatId
+        sender{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        receiver{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        messages {messageId,sender{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        },body, sendTime},
+        state
+        createTime
+    }
+}
+
+query getChatUser($name:String!){
+    getChatUser(name:$name) {
+        chatId
+        sender{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        receiver{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        }
+        messages {messageId,sender{
+            userID{
+                _id
+                googleId
+                createdAt
+                updatedAt
+            }
+
+            fullname
+            gender
+            birthdate
+            nationality
+            degree
+            description
+            creationdate
+            profilestatus
+            skills{skillname, score}
+            schedule{day, hours}
+        },body, sendTime},
+        state
+        createTime
+    }
+}
+
+
+
+mutation createChat($chat: chatInput!){
+    createChat(chat:$chat)
+}
+
+mutation addMessage($chat: chatInput!){
+    addMessage(chat:$chat)
 }

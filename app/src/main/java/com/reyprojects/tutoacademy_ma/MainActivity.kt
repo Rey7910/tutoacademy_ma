@@ -89,7 +89,7 @@ fun query_proof() = GlobalScope.async {
 
     try{
         val apolloClient = ApolloClient.Builder()
-            .serverUrl("https://3007-186-84-88-227.ngrok-free.app/graphql")
+            .serverUrl("https://95b2-186-84-88-227.ngrok-free.app/graphql")
             .build()
         Log.d("Tuto","client builded well")
         val response = apolloClient.query(GetUsersQuery()).execute()

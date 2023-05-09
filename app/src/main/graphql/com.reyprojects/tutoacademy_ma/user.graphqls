@@ -1,3 +1,6 @@
+
+# ------------  User --------------------
+
 type user {
     _id: String ,
     googleId: String!,
@@ -22,12 +25,214 @@ input userInput {
     updatedAt: String
 }
 
+# ------------  Profile --------------------
+
+type profile {
+    userID: user,
+    fullname: String,
+    gender: String,
+    birthdate: String,
+    nationality: String,
+    degree: String,
+    description: String,
+    skills: [skillsSchema],
+    schedule: [scheduleSchema],
+    creationdate: String,
+    profilestatus: Boolean
+}
+
+input profileInput {
+    userID: String,
+    fullname: String,
+    gender: String,
+    birthdate: String,
+    nationality: String,
+    degree: String,
+    description: String,
+    skills: [skillsSchemaInput],
+    schedule: [scheduleSchemaInput],
+    creationdate: String,
+    profilestatus: Boolean
+}
+
+type skillsSchema {
+    skillname: String,
+    score: Float
+}
+
+input skillsSchemaInput {
+    skillname: String,
+    score: Float
+}
+
+type scheduleSchema {
+    day: String,
+    hours: String
+}
+input scheduleSchemaInput {
+    day: String,
+    hours: String
+}
+
+# ------------  Meet schedule --------------------
+
+type Request {
+    id:ID!
+    user_req: profile!
+    tutor: profile!
+    message: String!
+    created_at: String!
+    scheduled_time: String!
+    accepted: String!
+}
+input RequestInput {
+    user_req: String!
+    tutor: String!
+    message: String!
+    scheduled_time: String!
+    accepted: String!
+}
+type Meeting {
+    id:ID!
+    request_id: Int!
+    created_at: String!
+    link: String!
+    state: String!
+}
+input MeetingInput {
+    link: String!
+    state: String!
+}
+
+# ------------  Tutor Service --------------------
+
+type Aptitude {
+    idRate: ID!
+    service: tutorService!
+    idQualifier: profile
+    aptitudeName: String!
+    aptitudeRate: Float!
+    aptitudeState: Boolean!
+}
+
+type Service {
+    idService: ID!
+    idProfile: profile
+    description: String!
+    serviceState: Boolean!
+}
+
+input ServiceInput {
+    idProfile: String
+    description: String
+    serviceState: Boolean
+}
+
+type tutorService{
+    idService: ID!
+    idProfile: profile
+    description: String
+    serviceState: Boolean
+}
+
+input AptitudeInput {
+    service: serviceInput
+    idQualifier: String
+    aptitudeName: String
+    aptitudeRate: Float
+    aptitudeState: Boolean
+}
+
+input serviceInput{
+    idService: ID!
+    idProfile: String
+    description: String
+    serviceState: Boolean
+}
+
+# ------------  Chat --------------------
+
+type chat {
+    chatId: Int,
+    sender: profile,
+    receiver: profile,
+    messages: [messageSchema],
+    state: Boolean,
+    createTime: String
+}
+
+input chatInput {
+    chatId: Int,
+    sender: String,
+    receiver: String,
+    messages: [messageSchemaInput],
+    state: Boolean,
+    createTime: String
+}
+
+type messageSchema {
+    messageId: Int,
+    sender: profile,
+    body: String,
+    sendTime: String
+}
+
+input messageSchemaInput {
+    messageId: Int,
+    sender: String,
+    body: String,
+    sendTime: String
+}
+
+# ------------  Setting Queries and Mutations --------------------
+
 type Query{
+    # ------------  User --------------------
     getUsers: [user]
     getUserId(id: String!): user
+    # ------------  Profile --------------------
+    getProfile(id: String!): profile
+    allProfiles: [profile]
+    findProfiles(value: String!): [profile]
+    # ------------  Meet schedule --------------------
+    allRequests: [Request]!
+    requestById(id: Int!): Request!
+    allMeetings: [Meeting]!
+    meetingById(id: Int!): Meeting!
+    meetingsFromRequestById(request_id: Int!): [Meeting]!
+    # ------------  Tutor Service --------------------
+    allAptitudes: [Aptitude]
+    aptitudeById(id: Int!): Aptitude
+    allServices: [Service]
+    serviceById(id: Int!): Service
+    # ------------  Chat --------------------
+    getChats: [chat]
+    getChatId(id: Int!): chat
+    getChatUser(name: String!): [chat]
 }
 
 type Mutation{
+    # ------------  User --------------------
     loginUser(user: userInput!): user
     logoutUser (id: String!): user
+    # ------------  Profile --------------------
+    createProfile(profile: profileInput!): String
+    updateProfile(profile: profileInput!): String
+    # ------------  Meet schedule --------------------
+    createRequest(request: RequestInput!): String!
+    updateRequest(id: Int!, request: RequestInput!): String!
+    deleteRequest(id: Int!): Int
+    createMeeting(id: Int!, meeting: MeetingInput!): Meeting!
+    updateMeeting(id: Int!, meeting: MeetingInput!): Meeting!
+    deleteMeeting(id: Int!): Int
+    # ------------  Tutor Service --------------------
+    createAptitude(aptitude: AptitudeInput!): String
+    updateAptitude(id: Int!, aptitude: AptitudeInput!): String
+    deleteAptitude(id: Int!): String
+    createService(service: ServiceInput!): String
+    updateService(id: Int!, service: ServiceInput!): String
+    deleteService(id: Int!): String
+    # ------------  Chat --------------------
+    createChat(chat: chatInput!): String
+    addMessage(chat: chatInput!): String
 }
