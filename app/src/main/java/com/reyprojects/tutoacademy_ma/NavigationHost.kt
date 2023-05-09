@@ -10,7 +10,7 @@ import com.reyprojects.tutoacademy_ma.Destinos.*
 fun  NavigationHost ( navController: NavHostController){
     NavHost(navController = navController, startDestination = Pantalla1.ruta){
         composable(Pantalla1.ruta){
-            Inicio()
+            Initio()
         }
         composable(Pantalla2.ruta){
             Profile()

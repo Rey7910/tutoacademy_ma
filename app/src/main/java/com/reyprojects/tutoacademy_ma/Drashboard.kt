@@ -61,6 +61,7 @@ fun TopBar(
     scaffoldState: ScaffoldState
 ){
     TopAppBar (
+
         title = { Text(text = "TutoAcademy", color = Color.Black)},
         backgroundColor = colorResource(id=R.color.white),
         navigationIcon = {

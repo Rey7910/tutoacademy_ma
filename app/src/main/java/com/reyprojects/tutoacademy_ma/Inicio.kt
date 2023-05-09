@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 
 @Preview(showBackground = true, backgroundColor = 0xDFDDDD)
 @Composable
-fun Inicio(){
+fun Initio(){
 
     Row(
         modifier = Modifier
@@ -34,7 +34,8 @@ fun Inicio(){
             modifier = Modifier
                 .size(
                     width = 200.dp,
-                    height = 200.dp)
+                    height = 200.dp
+                )
                 .padding(10.dp),
             contentAlignment = Alignment.Center
         ){
@@ -72,4 +73,6 @@ fun Inicio(){
             }
         }
     }
+
 }
+
