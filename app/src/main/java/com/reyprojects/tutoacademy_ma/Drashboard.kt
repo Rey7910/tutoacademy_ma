@@ -11,7 +11,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,12 +28,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.reyprojects.tutoacademy_ma.type.UserInput
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import coil.compose.rememberImagePainter
 
 
 
-@Preview
+
+
+
 @Composable
 fun PantallaPrincipal(){
     val scaffoldState = rememberScaffoldState()
@@ -62,7 +69,7 @@ fun TopBar(
 ){
     TopAppBar (
 
-        title = { Text(text = "TutoAcademy", color = Color.Black)},
+        title = { Text(text = "Tuto Academy", color = Color.Black)},
         backgroundColor = colorResource(id=R.color.white),
         navigationIcon = {
             IconButton(onClick = {
@@ -90,6 +97,8 @@ private fun DrawerContent(
 
     val itemsList = prepareNavigationDrawerItems()
 
+
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -105,7 +114,7 @@ private fun DrawerContent(
                 modifier = Modifier
                     .size(size = 120.dp)
                     .clip(shape = CircleShape),
-                painter = painterResource(id = R.drawable.chayanne),
+                painter = rememberImagePainter(current_user?.imageUrl),
                 contentDescription = "Profile Image"
             )
 
@@ -113,7 +122,7 @@ private fun DrawerContent(
             Text(
                 modifier = Modifier
                     .padding(top = 12.dp),
-                text = "Bryan Smith Colorado Lopez",
+                text = current_user?.givenName.toString() + " "+ current_user?.familyName.toString() ,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
             )
@@ -121,7 +130,7 @@ private fun DrawerContent(
             // user's email
             Text(
                 modifier = Modifier.padding(top = 8.dp, bottom = 30.dp),
-                text = "bcolorado@unal.edu.co",
+                text = current_user?.email.toString(),
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
             )

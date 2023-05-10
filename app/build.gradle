@@ -53,10 +53,14 @@ android {
         }
     }
 }
+configurations {
+    compile.exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+    compile.exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+}
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.core:core-ktx:1.8.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
     implementation 'androidx.activity:activity-compose:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
@@ -85,4 +89,14 @@ dependencies {
     implementation("com.apollographql.apollo3:apollo-runtime:3.8.1")
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:x.x.x"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
+    implementation "io.coil-kt:coil-compose:1.4.0"
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
 }
