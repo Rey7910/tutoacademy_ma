@@ -49,6 +49,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import androidx.navigation.compose.*
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
+import com.reyprojects.tutoacademy_ma.type.ProfileInput
+import com.reyprojects.tutoacademy_ma.type.ScheduleSchemaInput
+import com.reyprojects.tutoacademy_ma.type.SkillsSchemaInput
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -56,6 +59,12 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.URL
+import com.apollographql.apollo3.api.Optional
+import com.reyprojects.tutoacademy_ma.type.UserInput
+
+
+var current_user by mutableStateOf<UserInput?>(null)
+
 
 class MainActivity : ComponentActivity() {
 
@@ -72,7 +81,7 @@ class MainActivity : ComponentActivity() {
                             loginScreen(navController)
                         }
                         composable("home") {
-                            homeScreene()
+                            PantallaPrincipal()
                         }
                     }
 
@@ -85,14 +94,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @OptIn(DelicateCoroutinesApi::class)
-fun query_proof() = GlobalScope.async {
-
+fun login(user: UserInput) = GlobalScope.async {
     try{
         val apolloClient = ApolloClient.Builder()
-            .serverUrl("https://95b2-186-84-88-227.ngrok-free.app/graphql")
+            .serverUrl("https://933c-186-84-88-227.ngrok-free.app/graphql")
             .build()
         Log.d("Tuto","client builded well")
-        val response = apolloClient.query(GetUsersQuery()).execute()
+        //val response = apolloClient.query(GetUsersQuery()).execute()
+        val response = apolloClient.mutation(LoginUserMutation(user)).execute()
         Log.d("Query Response",response.data.toString())
     }catch (e: ApolloException){
         Log.d("Query Response",e.toString())
@@ -121,7 +130,7 @@ fun loginScreen(
         val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
         try{
             val account = task.getResult(ApiException::class.java)
-
+            //val coroutineScope = rememberCoroutineScope()
             val credential = GoogleAuthProvider.getCredential(account.idToken, null)
             viewModel.signInWithGoogleCredential(credential){
                 Log.d("TutoacademyMa","All good")
@@ -130,6 +139,24 @@ fun loginScreen(
                 Log.d("TutoacademyMa","First name: "+account.displayName.toString())
                 Log.d("TutoacademyMa","Google id: "+account.id.toString())
                 Log.d("TutoacademyMa","Image url: "+account.photoUrl.toString())
+
+                val user = UserInput(
+                    googleId = account.id.toString(),
+                    givenName = account.givenName.toString(),
+                    familyName = account.familyName.toString(),
+                    email = account.email.toString(),
+                    imageUrl = account.photoUrl.toString(),
+                    authStatus = true,
+                    createdAt = Optional.absent(),
+                    updatedAt = Optional.absent()
+                )
+
+
+                login(user)
+
+                current_user = user
+
+                println("Proof end")
 
 
                 navController.navigate("home")
@@ -230,48 +257,4 @@ fun loginScreen(
     }
 }
 
-@Composable
-fun homeScreene(){
 
-    val coroutineScope = rememberCoroutineScope()
-
-    Row{
-        Text("This is Home")
-    }
-
-    Button(
-        onClick = {
-
-            coroutineScope.launch {
-                query_proof().await()
-                println("Proof end")
-            }
-        },
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray),
-        shape = RoundedCornerShape(20.dp),
-        modifier = Modifier.padding(20.dp)
-    ){
-        Text("query proof")
-    }
-
-
-}
-
-@OptIn(DelicateCoroutinesApi::class)
-fun proof()= GlobalScope.async {
-    val client = OkHttpClient()
-    val url = URL("https://3007-186-84-88-227.ngrok-free.app/graphql")
-    val request = Request.Builder()
-        .url(url)
-        .build()
-
-    val response = client.newCall(request).execute()
-    if (response.isSuccessful) {
-        print("good")
-        print(response)
-    } else {
-        Log.d("MainActivity", "Error al obtener el Pokemon: ")
-        print(response)
-    }
-
-}

@@ -48,7 +48,7 @@ fun Initio(){
                     color = Color.Black,
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold)
-                Text(text = "Bienvenido Bryan Smith a tutoAcademy",
+                Text(text = "${current_user?.givenName.toString()}!! Bienvenido a tutoAcademy",
                     fontSize = 15.sp,
                     color = Color.Gray,
                     fontWeight = FontWeight.Light)
