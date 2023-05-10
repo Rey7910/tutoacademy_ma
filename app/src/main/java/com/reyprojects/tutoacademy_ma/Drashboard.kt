@@ -33,12 +33,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import coil.compose.rememberImagePainter
 
-
-
-
-
-
 @Composable
+@Preview
 fun PantallaPrincipal(){
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
