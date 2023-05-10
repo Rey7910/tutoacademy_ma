@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background_drawer">#F09E00</color>
     <color name="background">#DFDDDD</color>
+    <color name="light_blue">#CCFFFF</color>
 </resources>
