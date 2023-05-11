@@ -2,6 +2,8 @@ package com.reyprojects.tutoacademy_ma
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +15,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,42 +35,35 @@ fun Profile(){
         Spacer(modifier = Modifier.height(20.dp))
         ProfileInfo()
         Spacer(modifier = Modifier.height(10.dp))
-        ProfileSkills()
+        ProfileSkills(skills = "SkillA")
         Spacer(modifier = Modifier.height(10.dp))
-        ProfileTutoringSchedule()
+        ProfileTutoringSchedule(schedule = "Lunes 4pm-6pm")
     }
 }
 
 @Composable
 fun ProfileImageAndName(name: String){
     Column(modifier = Modifier
-        .background(colorResource(id = R.color.light_blue))
+        .background(colorResource(id = R.color.light_orange))
         .padding(5.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
         Image(painterResource(R.drawable.chayanne),
             contentDescription = "Imagen de perfil",
             modifier = Modifier
-                .padding(15.dp)
+                .padding(10.dp)
                 .clip(CircleShape)
                 .size(120.dp))
-        Text(text = "Hola $name !",
+        Text(text = "Hola " + "$name" + "!",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold, modifier = Modifier.padding(15.dp))
     }
 }
 
 @Composable
-fun ProfileName(name: String) {
-    Text(text = "Hola $name !",
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold, modifier = Modifier.padding(15.dp))
-}
-
-@Composable
 fun ProfileInfo() {
         Column(modifier = Modifier
-            .background(colorResource(id = R.color.light_blue))
+            .background(colorResource(id = R.color.light_orange))
             .padding(15.dp)
             .fillMaxWidth()) {
             Text("Tu información:", fontSize = 20.sp)
@@ -84,13 +81,35 @@ fun ProfileInfo() {
 }
 
 @Composable
-fun ProfileSkills(){
-    Text("Habilidades: ", fontSize = 20.sp)
+fun ProfileSkills(skills: String){
+    Column(modifier = Modifier
+        .background(colorResource(id = R.color.light_orange))
+        .padding(15.dp)
+        .fillMaxWidth()) {
+        Text("Habilidades: ", fontSize = 20.sp)
+        Text("$skills")
+        Spacer(
+            modifier = Modifier.height(
+                5.dp
+            )
+        )
+    }
 }
 
 @Composable
-fun ProfileTutoringSchedule(){
-    Text("Horario de tutorías: ", fontSize = 20.sp)
+fun ProfileTutoringSchedule(schedule: String){
+    Column(modifier = Modifier
+        .background(colorResource(id = R.color.light_orange))
+        .padding(15.dp)
+        .fillMaxWidth()) {
+        Text("Horario de tutorías: ", fontSize = 20.sp)
+        Text("$schedule")
+        Spacer(
+            modifier = Modifier.height(
+                5.dp
+            )
+        )
+    }
 }
 
 @Composable
