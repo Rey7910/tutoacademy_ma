@@ -21,13 +21,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -87,22 +90,33 @@ fun BasicEvent(
     event: Event,
     modifier: Modifier = Modifier,
 ) {
+    var show by rememberSaveable{ mutableStateOf(false )}
     Column(
         modifier = modifier
             .padding(end = 2.dp, bottom = 2.dp)
             .background(event.color, shape = RoundedCornerShape(4.dp))
             .padding(4.dp)
+
     ) {
+
         Text(
             text = "${event.start.format(EventTimeFormatter)} - ${event.end.format(EventTimeFormatter)}",
             style = MaterialTheme.typography.caption,
         )
+        TextButton(onClick = { show = true }) {
 
-        Text(
-            text = event.name,
-            style = MaterialTheme.typography.body1,
-            fontWeight = FontWeight.Bold,
-        )
+            Text(
+                text = event.name,
+                style = MaterialTheme.typography.body1,
+                fontWeight = FontWeight.Bold,
+            )
+
+        }
+
+        details(show) { show = false }
+
+
+
 
         if (event.description != null) {
             Text(
@@ -112,6 +126,24 @@ fun BasicEvent(
                 overflow = TextOverflow.Ellipsis,
             )
         }
+    }
+}
+
+
+
+@Composable
+fun details(show:Boolean, onConfirm: ()-> Unit){
+    if (show){
+        AlertDialog(
+            onDismissRequest = { },
+            confirmButton = {
+                TextButton(onClick = { onConfirm() }) {
+                    Text(text = "Confirmar")
+                }
+            },
+            title = { Text(text = "Detalles") },
+            text = { Text(text = "Este es el cuerpo")}
+        )
     }
 }
 
