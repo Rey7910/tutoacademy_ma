@@ -2,8 +2,6 @@ package com.reyprojects.tutoacademy_ma
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,7 +50,7 @@ fun ProfileImageAndName(name: String){
                 .padding(15.dp)
                 .clip(CircleShape)
                 .size(120.dp))
-        Text(text = "Hola " + "$name" + "!",
+        Text(text = "Hola $name !",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold, modifier = Modifier.padding(15.dp))
     }
@@ -61,7 +58,7 @@ fun ProfileImageAndName(name: String){
 
 @Composable
 fun ProfileName(name: String) {
-    Text(text = "Hola " + "$name" + "!",
+    Text(text = "Hola $name !",
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold, modifier = Modifier.padding(15.dp))
 }

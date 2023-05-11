@@ -10,4 +10,5 @@
     <color name="background_drawer">#F09E00</color>
     <color name="background">#DFDDDD</color>
     <color name="light_blue">#CCFFFF</color>
+    <color name="background_event">#E6CDA2</color>
 </resources>

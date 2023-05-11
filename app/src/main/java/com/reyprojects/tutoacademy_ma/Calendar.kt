@@ -1,22 +1,15 @@
 package com.reyprojects.tutoacademy_ma
 
 import android.os.Build
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,8 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -82,7 +73,7 @@ data class Event(
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
-val EventTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+val EventTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("h:mm a")!!
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -113,7 +104,7 @@ fun BasicEvent(
 
         }
 
-        details(show) { show = false }
+        Details(show, event) { show = false }
 
 
 
@@ -131,24 +122,35 @@ fun BasicEvent(
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun details(show:Boolean, onConfirm: ()-> Unit){
+fun Details(show:Boolean, event: Event, onConfirm: ()-> Unit){
     if (show){
         AlertDialog(
             onDismissRequest = { },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
-                    Text(text = "Confirmar")
+                    Text(text = "OK")
                 }
             },
-            title = { Text(text = "Detalles") },
-            text = { Text(text = "Este es el cuerpo")}
+            title = { Text(text = "Detalles del evento") },
+            text = {
+                Column{
+                    Text(text = "Nombre del evento: " + event.name)
+                    Text(text = "Fecha de creación:  Aqui va el tema a dictar")
+                    Text(text = "Inicia: " + event.start.format(EventTimeFormatter))
+                    Text(text = "Termina: " + event.end.format(EventTimeFormatter))
+                    Text(text = "Mensaje: " + event.description)
+                    Text(text = "Tutor:  Aqui va el nombre del tutor")
+                    Text(text = "Enlace:  Aqui va el enlace")
+
+                } }
         )
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-private val sampleEvents = listOf(
+val sampleEvents = listOf(
     Event(
         name = "Google I/O Keynote",
         color = Color(0xFFAFBBF2),
@@ -193,12 +195,6 @@ private val sampleEvents = listOf(
     ),
 )
 
-class EventsProvider : PreviewParameterProvider<Event> {
-    @RequiresApi(Build.VERSION_CODES.O)
-    override val values = sampleEvents.asSequence()
-}
-
-
 
 private class EventDataModifier(
     val event: Event,
@@ -209,7 +205,7 @@ private class EventDataModifier(
 private fun Modifier.eventData(event: Event) = this.then(EventDataModifier(event))
 
 @RequiresApi(Build.VERSION_CODES.O)
-private val DayFormatter = DateTimeFormatter.ofPattern("EE, MMM d")
+val DayFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, LLLL d")!!
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -307,7 +303,7 @@ fun Schedule(
                     .padding(start = with(LocalDensity.current) { sidebarWidth.toDp() })
                     .horizontalScroll(horizontalScrollState)
             )
-            Row() {
+            Row {
                 ScheduleSidebar(
                     hourHeight = hourHeight,
                     modifier = Modifier
