@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,11 +33,13 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -48,9 +51,16 @@ import com.google.firebase.auth.GoogleAuthProvider
 import androidx.navigation.compose.*
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
+import com.reyprojects.tutoacademy_ma.type.ProfileInput
+import com.reyprojects.tutoacademy_ma.type.ScheduleSchemaInput
+import com.reyprojects.tutoacademy_ma.type.SkillsSchemaInput
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.net.URL
 import com.apollographql.apollo3.api.Optional
 import com.reyprojects.tutoacademy_ma.type.UserInput
 
@@ -71,7 +81,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController, startDestination = "login") {
                         composable("login") {
-                            LoginScreen(navController)
+                            loginScreen(navController)
                         }
                         composable("home") {
                             PantallaPrincipal()
@@ -90,7 +100,7 @@ class MainActivity : ComponentActivity() {
 fun login(user: UserInput) = GlobalScope.async {
     try{
         val apolloClient = ApolloClient.Builder()
-            .serverUrl("https://933c-186-84-88-227.ngrok-free.app/graphql")
+            .serverUrl("https://b392-186-84-88-227.ngrok-free.app/graphql")
             .build()
         Log.d("Tuto","client builded well")
         //val response = apolloClient.query(GetUsersQuery()).execute()
@@ -106,7 +116,7 @@ fun login(user: UserInput) = GlobalScope.async {
 
 
 @Composable
-fun LoginScreen(
+fun loginScreen(
     navController: NavHostController,
     viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
@@ -209,8 +219,8 @@ fun LoginScreen(
                         .requestIdToken(token)
                         .requestEmail()
                         .build()
-                    val googleSignInClient = GoogleSignIn.getClient(context, options)
-                    launcher.launch(googleSignInClient.signInIntent)
+                    val GoogleSignInClient = GoogleSignIn.getClient(context, options)
+                    launcher.launch(GoogleSignInClient.signInIntent)
 
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),

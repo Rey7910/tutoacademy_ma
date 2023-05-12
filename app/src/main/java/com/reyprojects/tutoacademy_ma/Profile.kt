@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 
 
 @Composable
@@ -31,7 +32,7 @@ fun Profile(){
     Column(
         modifier = Modifier.padding(20.dp)
     ){
-        ProfileImageAndName("Jessica")
+        ProfileImageAndName(current_user?.givenName.toString())
         Spacer(modifier = Modifier.height(20.dp))
         ProfileInfo()
         Spacer(modifier = Modifier.height(10.dp))
@@ -48,7 +49,8 @@ fun ProfileImageAndName(name: String){
         .padding(5.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(painterResource(R.drawable.chayanne),
+        Image(
+            rememberImagePainter(current_user?.imageUrl),
             contentDescription = "Imagen de perfil",
             modifier = Modifier
                 .padding(10.dp)
