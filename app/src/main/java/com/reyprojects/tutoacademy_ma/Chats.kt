@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -115,39 +116,9 @@ fun Chats(){
             }
         }
 
-       /* Column(modifier = Modifier
-            .verticalScroll(scrollState)
-            .fillMaxWidth()
-        ){
-
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-            receiverMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria, pero erda vale mia eche monda pa fina xdddddddddd")
-            receiverMessage("Hola, necesito una tutoria")
-            receiverMessage("Hola, necesito una tutoria, pero erda vale mia eche monda pa fina xdddddddddd")
-
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-            senderMessage("Hola, necesito una tutoria")
-
-
-
-        }*/
-
         sendButton(modifier = Modifier
             .align(Alignment.End) // Alinea el botón en la esquina inferior derecha
             .padding(16.dp) // Añade un margen al botón
-            .background(Color.Blue) // Establece el color de fondo del botón
             .clip(CircleShape) // Agrega una forma circular al botón
             .padding(8.dp))
     }
@@ -244,25 +215,31 @@ fun headerChat(senderGivenName: String){
 @Composable
 fun sendButton(modifier: Modifier) {
     Box(modifier = Modifier
- // Alinea el botón en la esquina inferior derecha
-        .padding(16.dp) // Añade un margen al botón
-        .background(Color.Blue) // Establece el color de fondo del botón
-        .clip(CircleShape) // Agrega una forma circular al botón
-        .padding(8.dp)) {
+
+        .padding(16.dp)
+        //.background(Color.Blue)
+        .clip(CircleShape)
+        .padding(8.dp).fillMaxWidth().background(Color.Gray)) {
         Row {
             var text by remember { mutableStateOf(TextFieldValue("")) }
             TextField(
                 value = text,
                 onValueChange = { newText ->
                     text = newText
-                }
+                },
+                        modifier = Modifier
+                        .width(240.dp)
             )
+            Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
-                    // Acción a realizar cuando el botón es presionado
-                    // En este caso, simplemente imprimimos el valor del TextField
                     println(text)
-                }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(251, 196, 3),
+                    contentColor = Color.Black
+                ) ,modifier = Modifier.padding(top = 4.dp, start = 5.dp)
+
             ) {
                 Text(text = "enviar")
             }
