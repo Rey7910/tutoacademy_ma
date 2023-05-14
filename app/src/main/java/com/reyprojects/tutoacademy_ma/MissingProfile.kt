@@ -1,11 +1,11 @@
 package com.reyprojects.tutoacademy_ma
 
-import android.graphics.fonts.FontStyle
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,14 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
-@Preview (showSystemUi = true)
+
 @Composable
-fun missingProfile(){
-    Column(modifier =Modifier.fillMaxWidth().background(Color.White)){
+fun missingProfile(navHostController: NavHostController){
+    Column(modifier =Modifier.fillMaxWidth().background(Color.White).fillMaxSize()){
         Image(
             painterResource(R.drawable.doubtlogo),
             contentDescription = null,
@@ -58,7 +58,7 @@ fun missingProfile(){
 
         Button(
             onClick={
-
+                navHostController.navigate(Destinos.Pantalla7.ruta)
             },
             modifier = Modifier.fillMaxWidth().padding(start=40.dp, end=40.dp)
         ){

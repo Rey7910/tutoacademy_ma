@@ -66,6 +66,28 @@ query allProfiles{
     }
 }
 
+query getProfile($id: String!){
+    getProfile(id: $id){
+        userID{
+            _id
+            googleId
+            createdAt
+            updatedAt
+        }
+
+        fullname
+        gender
+        birthdate
+        nationality
+        degree
+        description
+        creationdate
+        profilestatus
+        skills{skillname, score}
+        schedule{day, hours}
+    }
+}
+
 query findProfiles($value : String!){
     findProfiles(value: $value) {
         userID{

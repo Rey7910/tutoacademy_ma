@@ -1,6 +1,7 @@
 package com.reyprojects.tutoacademy_ma
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -26,11 +27,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true, backgroundColor = 0xDFDDDD)
 @Composable
-fun Initio(){
+fun Initio(navHostController: NavHostController){
+    Log.d("json object", jsonProfile)
 
     val events = sampleEvents
 
