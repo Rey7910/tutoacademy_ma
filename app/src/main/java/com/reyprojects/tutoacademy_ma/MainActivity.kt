@@ -67,7 +67,7 @@ import org.json.JSONObject
 
 
 var current_user by mutableStateOf<UserInput?>(null)
-
+val urlGraph = "https://e117-186-84-88-227.ngrok-free.app/graphql"
 
 class MainActivity : ComponentActivity() {
 
@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
 fun login(user: UserInput) = GlobalScope.async {
     try{
         val apolloClient = ApolloClient.Builder()
-            .serverUrl("https://e117-186-84-88-227.ngrok-free.app/graphql")
+            .serverUrl(urlGraph)
             .build()
         Log.d("Tuto","client builded well")
         //val response = apolloClient.query(GetUsersQuery()).execute()

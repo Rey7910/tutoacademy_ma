@@ -22,7 +22,10 @@ fun  NavigationHost ( navController: NavHostController){
             Mi_Tutoria()
         }
         composable(Pantalla4.ruta){
-            Chats()
+            Chats(navController)
+        }
+        composable(Pantalla5.ruta){
+            ChatContent(navController)
         }
 
     }

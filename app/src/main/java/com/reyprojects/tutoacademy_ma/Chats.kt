@@ -21,6 +21,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -38,8 +40,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -48,6 +54,10 @@ import kotlinx.coroutines.async
 import org.json.JSONArray
 import org.json.JSONObject
 import com.google.gson.Gson
+import com.reyprojects.tutoacademy_ma.type.ChatInput
+import com.reyprojects.tutoacademy_ma.type.MessageSchema
+import com.reyprojects.tutoacademy_ma.type.MessageSchemaInput
+import com.reyprojects.tutoacademy_ma.type.UserInput
 
 
 var Chats:String= ""
@@ -60,6 +70,7 @@ data class Message(val text: String, val sender: String)
 data class AvailableChat(val googleid: String, val fullname: String, val image: String)
 
 val AvailableChats = mutableListOf<AvailableChat>()
+var chat_global by mutableStateOf<AvailableChat?>(null)
 
 val messages = mutableListOf<Message>(
     Message("Hola","sender"),
@@ -83,11 +94,12 @@ val messages = mutableListOf<Message>(
     Message("Hola, necesito una tutoria, pero erda vale mia eche monda pa fina xdddddddddd\"","sender")
 )
 
+
 @OptIn(DelicateCoroutinesApi::class)
 fun getAllChats(id: String) = GlobalScope.async {
     try{
         val apolloClient = ApolloClient.Builder()
-            .serverUrl("https://e117-186-84-88-227.ngrok-free.app/graphql")
+            .serverUrl(urlGraph)
             .build()
         Log.d("Tuto","client builded well")
         val response = apolloClient.query(GetChatUserQuery(id)).execute()
@@ -104,9 +116,9 @@ fun getAllChats(id: String) = GlobalScope.async {
 }
 
 
-@Preview(showSystemUi = true)
+
 @Composable
-fun Chats(){
+fun Chats(navController: NavHostController){
 
     val scrollState = rememberLazyListState()
 
@@ -187,7 +199,7 @@ fun Chats(){
             modifier = Modifier.weight(1f),
         ) {
             items(AvailableChats) { chat ->
-                chatBox(chat)
+                chatBox(chat, navController = navController)
                 Spacer(modifier = Modifier
                     .height(30.dp))
             }
@@ -201,12 +213,12 @@ fun Chats(){
 }
 
 @Composable
-fun ChatContent(){
+fun ChatContent(navController: NavHostController){
     val scrollState = rememberLazyListState()
 
     Column{
 
-        headerChat(senderGivenName = sender)
+        headerChat(chat_global, navController)
 
         LazyColumn(
             state = scrollState,
@@ -231,15 +243,25 @@ fun ChatContent(){
 }
 
 @Composable
-fun chatBox(chat: AvailableChat){
+fun chatBox(chat: AvailableChat, navController: NavHostController){
+
+    Log.d("Navcontroller",navController.toString())
     Button(
         onClick = {
             println("going to ${chat.googleid} chat")
+            try{
+                chargeMessages(chat)
+                navController.navigate(Destinos.Pantalla5.ruta)
+                chat_global = chat
+            }catch(e: Exception){
+                Log.d("Exception",e.toString())
+            }
+
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color(251, 196, 3),
             contentColor = Color.Black
-        ) ,modifier = Modifier.padding(start = 5.dp)
+        ) ,modifier = Modifier.padding(start = 5.dp, end = 5.dp)
             .fillMaxWidth()
 
     ) {
@@ -247,7 +269,7 @@ fun chatBox(chat: AvailableChat){
             rememberImagePainter(chat.image),
             contentDescription = "Imagen de perfil",
             modifier = Modifier
-                .padding(10.dp)
+                .padding(start = 10.dp)
                 .clip(CircleShape)
                 .size(60.dp))
         Spacer(modifier = Modifier
@@ -285,7 +307,7 @@ fun senderMessage(message: String) {
 }
 
 @Composable
-    fun receiverMessage(message: String) {
+fun receiverMessage(message: String) {
     val shape = RoundedCornerShape(12.dp)
     Spacer(modifier = Modifier
         .width(30.dp)
@@ -312,7 +334,7 @@ fun senderMessage(message: String) {
 
 
 @Composable
-fun headerChat(senderGivenName: String){
+fun headerChat(chat: AvailableChat?, navController: NavHostController){
     Box(modifier = Modifier
         .fillMaxWidth()
         .background(Color(251, 196, 3))
@@ -320,8 +342,26 @@ fun headerChat(senderGivenName: String){
         //Text("Aqui van los chats")
 
         Row {
+            IconButton(
+                onClick = {
+                    try{
+                        navController.navigate(Destinos.Pantalla4.ruta)
+                    }catch(e: Exception){
+                        Log.d("Exception",e.toString())
+                    }
+
+                },
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(10.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.back),
+                    contentDescription = "Back icon"
+                )
+            }
             Image(
-                painter = painterResource(R.drawable.logo),
+                painter = rememberImagePainter(chat?.image),
                 contentDescription = "",
                 contentScale = ContentScale.Crop,            // crop the image if it's not a square
                 modifier = Modifier
@@ -335,7 +375,11 @@ fun headerChat(senderGivenName: String){
                     .fillMaxWidth()
                     .offset(x = 8.dp, y = 9.dp) // apply the offset here
             ) {
-                Text(text = senderGivenName, fontSize = 20.sp)
+                var fullname = ""
+                if(chat?.fullname!=null){
+                    fullname = chat?.fullname
+                }
+                Text(text = fullname, fontSize = 20.sp)
             }
 
         }
@@ -366,7 +410,9 @@ fun sendButton(modifier: Modifier) {
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
-                    println(text)
+
+                    addMessage(text.text)
+
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(251, 196, 3),
@@ -378,6 +424,61 @@ fun sendButton(modifier: Modifier) {
             }
         }
     }
+}
+
+
+
+fun chargeMessages(chat: AvailableChat){
+
+    println("Charging messages")
+    messages.clear()
+    val jsonObject = JSONObject(Chats)
+    val chatsArray = jsonObject.getJSONArray("getChatUser")
+    for (i in 0 until chatsArray.length()) {
+        val chatObject = chatsArray.getJSONObject(i)
+
+        val id_sender = jsonObject.getJSONArray("getChatUser")
+            .getJSONObject(i)
+            .getJSONObject("sender")
+            .getJSONObject("userID").getString("googleId")
+        Log.d("id sender ", id_sender)
+
+        val id_receiver = jsonObject.getJSONArray("getChatUser")
+            .getJSONObject(i)
+            .getJSONObject("receiver")
+            .getJSONObject("userID").getString("googleId")
+        Log.d("TutoGod", id_receiver)
+
+        if(id_receiver==chat.googleid || id_sender==chat.googleid){
+            val msg = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONArray("messages")
+            println(msg)
+            for(j in msg.length() - 1 downTo 0) {
+                val messageObj = msg.getJSONObject(j)
+                // haz algo con el objeto del mensaje, por ejemplo imprimir el cuerpo
+                val body = messageObj.getString("body")
+                val id_sender = messageObj
+                    .getJSONObject("sender")
+                    .getJSONObject("userID").getString("googleId")
+
+                if(id_sender== current_user?.googleId){
+                    print("I sent the next message")
+                    println(body)
+                    messages.add(Message(body,"sender"))
+                }else{
+                    print("Someone sent me the message below")
+                    println(body)
+                    messages.add(Message(body,"receiver"))
+                }
+
+            }
+            break
+        }
+
+
+    }
+    Log.d("God","finished")
 }
 
 
@@ -394,7 +495,7 @@ fun headerSelectChat(){
                 modifier = Modifier
                     .padding(start = 2.dp)
                     .fillMaxWidth()
-                   // .offset(x = 8.dp, y = 9.dp) // apply the offset here
+
             ) {
                 Text(text = "Chats Disponibles", fontSize = 25.sp)
             }
@@ -402,4 +503,36 @@ fun headerSelectChat(){
         }
 
     }
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+fun addMessage(message: String) = GlobalScope.async {
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(urlGraph)
+            .build()
+        Log.d("Tuto","client builded well")
+
+        val messageSchema = MessageSchemaInput(
+            sender = Optional.present(current_user?.googleId),
+            body = Optional.present(message)
+
+        )
+
+        val messageSchemaList = mutableListOf<MessageSchemaInput>()
+        messageSchemaList.add(messageSchema)
+
+        val chat_input = ChatInput(
+            sender = Optional.present(current_user?.googleId),
+            receiver = Optional.present(chat_global?.googleid),
+            messages = Optional.present(messageSchemaList)
+        )
+
+        val response = apolloClient.mutation(AddMessageMutation(chat_input)).execute()
+
+
+    }catch (e: ApolloException){
+        Log.d("Query Response",e.toString())
+    }
+
 }

@@ -11,4 +11,6 @@ sealed class Destinos(
     object Pantalla3: Destinos(R.drawable.calendar, "Mis tutorias","pantalla3")
     object Pantalla4: Destinos(R.drawable.chat, "Chats","pantalla4")
 
+    object Pantalla5: Destinos(R.drawable.chat, "chat_content","pantalla5")
+
 }
