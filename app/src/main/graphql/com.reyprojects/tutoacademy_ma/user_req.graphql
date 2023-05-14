@@ -524,6 +524,7 @@ query getChatUser($name:String!){
             userID{
                 _id
                 googleId
+                imageUrl
                 createdAt
                 updatedAt
             }
@@ -542,6 +543,7 @@ query getChatUser($name:String!){
         receiver{
             userID{
                 _id
+                imageUrl
                 googleId
                 createdAt
                 updatedAt
@@ -561,6 +563,7 @@ query getChatUser($name:String!){
         messages {messageId,sender{
             userID{
                 _id
+                imageUrl
                 googleId
                 createdAt
                 updatedAt

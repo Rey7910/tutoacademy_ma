@@ -63,6 +63,7 @@ import okhttp3.Request
 import java.net.URL
 import com.apollographql.apollo3.api.Optional
 import com.reyprojects.tutoacademy_ma.type.UserInput
+import org.json.JSONObject
 
 
 var current_user by mutableStateOf<UserInput?>(null)
@@ -100,7 +101,7 @@ class MainActivity : ComponentActivity() {
 fun login(user: UserInput) = GlobalScope.async {
     try{
         val apolloClient = ApolloClient.Builder()
-            .serverUrl("https://b392-186-84-88-227.ngrok-free.app/graphql")
+            .serverUrl("https://e117-186-84-88-227.ngrok-free.app/graphql")
             .build()
         Log.d("Tuto","client builded well")
         //val response = apolloClient.query(GetUsersQuery()).execute()
@@ -154,15 +155,17 @@ fun loginScreen(
                     updatedAt = Optional.absent()
                 )
 
+                try{
+                    login(user)
+                    current_user = user
+                    println("Proof end")
+                    navController.navigate("home")
+                }catch(e: Exception){
+                    Log.d("TutoacademyMa","ERROR while login")
+                }
 
-                login(user)
-
-                current_user = user
-
-                println("Proof end")
 
 
-                navController.navigate("home")
             }
         }catch(e: Exception){
             Log.d("TutoacademyMa","Something wrong")
@@ -259,5 +262,4 @@ fun loginScreen(
         }
     }
 }
-
 

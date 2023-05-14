@@ -15,13 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -41,19 +38,29 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import org.json.JSONArray
+import org.json.JSONObject
+import com.google.gson.Gson
 
-var Chats:String = ""
+
+var Chats:String= ""
 val parcial_message = "hola, necesito una tutoria"
 val sender = "Usuario Random"
 val receiver = "Miguel Angel Puentes"
 
 
 data class Message(val text: String, val sender: String)
+data class AvailableChat(val googleid: String, val fullname: String, val image: String)
+
+val AvailableChats = mutableListOf<AvailableChat>()
+
 val messages = mutableListOf<Message>(
     Message("Hola","sender"),
     Message("holaaaa","receiver"),
@@ -75,27 +82,126 @@ val messages = mutableListOf<Message>(
     Message("holaaaa","receiver"),
     Message("Hola, necesito una tutoria, pero erda vale mia eche monda pa fina xdddddddddd\"","sender")
 )
+
 @OptIn(DelicateCoroutinesApi::class)
-fun getAllChats() = GlobalScope.async {
+fun getAllChats(id: String) = GlobalScope.async {
     try{
         val apolloClient = ApolloClient.Builder()
-            .serverUrl("https://b392-186-84-88-227.ngrok-free.app/graphql")
+            .serverUrl("https://e117-186-84-88-227.ngrok-free.app/graphql")
             .build()
         Log.d("Tuto","client builded well")
-        //val response = apolloClient.query(GetUsersQuery()).execute()
-        val response = apolloClient.query(GetChatsQuery()).execute()
+        val response = apolloClient.query(GetChatUserQuery(id)).execute()
+        val gson = Gson()
+        val json = gson.toJson(response.data)
         Log.d("Query Response",response.data.toString())
-        Chats = response.data.toString()
+        Log.d("Query Conversion",json)
+        Chats = json
+
     }catch (e: ApolloException){
         Log.d("Query Response",e.toString())
     }
 
 }
 
+
 @Preview(showSystemUi = true)
 @Composable
 fun Chats(){
 
+    val scrollState = rememberLazyListState()
+
+    getAllChats(current_user?.googleId.toString())
+    AvailableChats.clear()
+
+    try{
+        Log.d("Chat Tuto","Everything good")
+        val jsonObject = JSONObject(Chats)
+        val chatsArray = jsonObject.getJSONArray("getChatUser")
+
+
+        for (i in 0 until chatsArray.length()) {
+            val chatObject = chatsArray.getJSONObject(i)
+            val chatId = chatObject.getInt("chatId")
+            Log.d("TutoGod", chatId.toString())
+            val fullname_sender = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("sender")
+                .getString("fullname")
+            Log.d("full name sender", fullname_sender)
+            val id_sender = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("sender")
+                .getJSONObject("userID").getString("googleId")
+            Log.d("id sender ", id_sender)
+            val image_sender = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("sender")
+                .getJSONObject("userID").getString("imageUrl")
+            Log.d("id sender ", image_sender)
+            val fullname_receiver = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("receiver")
+                .getString("fullname")
+            Log.d("fullname receiver", fullname_receiver)
+            val id_receiver = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("receiver")
+                .getJSONObject("userID").getString("googleId")
+            Log.d("TutoGod", id_receiver)
+            val image_receiver = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("receiver")
+                .getJSONObject("userID").getString("imageUrl")
+            Log.d("id sender ", image_receiver)
+
+            if(id_sender!= current_user?.googleId.toString()){
+                val chat = AvailableChat(id_sender, fullname_sender, image_sender)
+                AvailableChats.add(chat)
+            }else{
+                val chat = AvailableChat(id_receiver, fullname_receiver, image_receiver)
+                AvailableChats.add(chat)
+            }
+
+        }
+
+
+
+
+    }catch(e: Exception){
+        Log.d("TutoAAAA",e.toString())
+
+    }
+    
+    Column{
+
+        headerSelectChat()
+        Spacer(modifier = Modifier
+            .height(30.dp))
+
+        if(AvailableChats.isEmpty()){
+            Text("No tienes chats Disponibles")
+        }
+
+        LazyColumn(
+            state = scrollState,
+            modifier = Modifier.weight(1f),
+        ) {
+            items(AvailableChats) { chat ->
+                chatBox(chat)
+                Spacer(modifier = Modifier
+                    .height(30.dp))
+            }
+        }
+
+
+    }
+
+
+
+}
+
+@Composable
+fun ChatContent(){
     val scrollState = rememberLazyListState()
 
     Column{
@@ -108,23 +214,48 @@ fun Chats(){
             reverseLayout = true // Muestra los elementos en orden inverso
         ) {
             items(messages) { message ->
-                if (message.sender == "sender") {
-                    senderMessage(message.text)
-                } else {
-                    receiverMessage(message.text)
+                if(message.sender=="sender"){
+                    senderMessage(message = message.text)
+                }else{
+                    receiverMessage(message = message.text)
                 }
             }
         }
 
         sendButton(modifier = Modifier
             .align(Alignment.End) // Alinea el botón en la esquina inferior derecha
-            .padding(16.dp) // Añade un margen al botón
+            .padding(30.dp) // Añade un margen al botón
             .clip(CircleShape) // Agrega una forma circular al botón
             .padding(8.dp))
     }
-
 }
 
+@Composable
+fun chatBox(chat: AvailableChat){
+    Button(
+        onClick = {
+            println("going to ${chat.googleid} chat")
+        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color(251, 196, 3),
+            contentColor = Color.Black
+        ) ,modifier = Modifier.padding(start = 5.dp)
+            .fillMaxWidth()
+
+    ) {
+        Image(
+            rememberImagePainter(chat.image),
+            contentDescription = "Imagen de perfil",
+            modifier = Modifier
+                .padding(10.dp)
+                .clip(CircleShape)
+                .size(60.dp))
+        Spacer(modifier = Modifier
+            .width(30.dp))
+        Text(text = "${chat.fullname}")
+    }
+
+}
 
 @Composable
 fun senderMessage(message: String) {
@@ -219,7 +350,9 @@ fun sendButton(modifier: Modifier) {
         .padding(16.dp)
         //.background(Color.Blue)
         .clip(CircleShape)
-        .padding(8.dp).fillMaxWidth().background(Color.Gray)) {
+        .padding(8.dp)
+        .fillMaxWidth()
+        .background(Color.Gray)) {
         Row {
             var text by remember { mutableStateOf(TextFieldValue("")) }
             TextField(
@@ -248,4 +381,25 @@ fun sendButton(modifier: Modifier) {
 }
 
 
+@Composable
+fun headerSelectChat(){
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .background(Color(251, 196, 3))
+        .padding(10.dp)) {
 
+        Row {
+
+            Box(
+                modifier = Modifier
+                    .padding(start = 2.dp)
+                    .fillMaxWidth()
+                   // .offset(x = 8.dp, y = 9.dp) // apply the offset here
+            ) {
+                Text(text = "Chats Disponibles", fontSize = 25.sp)
+            }
+
+        }
+
+    }
+}
