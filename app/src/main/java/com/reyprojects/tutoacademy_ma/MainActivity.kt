@@ -67,7 +67,7 @@ import org.json.JSONObject
 
 
 var current_user by mutableStateOf<UserInput?>(null)
-val urlGraph = "https://e117-186-84-88-227.ngrok-free.app/graphql"
+val urlGraph = "https://d21c-190-250-214-188.ngrok-free.app/graphql"
 
 class MainActivity : ComponentActivity() {
 
