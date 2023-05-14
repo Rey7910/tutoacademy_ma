@@ -62,13 +62,16 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.URL
 import com.apollographql.apollo3.api.Optional
+import com.google.gson.Gson
 import com.reyprojects.tutoacademy_ma.type.UserInput
 import org.json.JSONObject
 
 
 var current_user by mutableStateOf<UserInput?>(null)
-val urlGraph = "https://e117-186-84-88-227.ngrok-free.app/graphql"
-
+var current_profile by mutableStateOf<ProfileInput?>(null)
+val urlGraph = "https://b636-186-84-88-227.ngrok-free.app/graphql"
+var jsonProfile = ""
+var navegated_profile = false
 class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -106,13 +109,33 @@ fun login(user: UserInput) = GlobalScope.async {
         Log.d("Tuto","client builded well")
         //val response = apolloClient.query(GetUsersQuery()).execute()
         val response = apolloClient.mutation(LoginUserMutation(user)).execute()
-        Log.d("Query Response",response.data.toString())
+        Log.d("Query Login Response",response.data.toString())
     }catch (e: ApolloException){
-        Log.d("Query Response",e.toString())
+        Log.d("Query Login Response",e.toString())
     }
 
 }
 
+@OptIn(DelicateCoroutinesApi::class)
+fun getProfile(googleid: String) = GlobalScope.async {
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(urlGraph)
+            .build()
+        Log.d("Tuto","client builded well")
+
+        val response = apolloClient.query(GetProfileQuery(googleid)).execute()
+        Log.d("Query Profile Response",response.data.toString())
+
+        val gson = Gson()
+        jsonProfile = gson.toJson(response.data)
+        Log.d("Json loaded", jsonProfile)
+
+    }catch (e: ApolloException){
+        Log.d("Query Profile Response",e.toString())
+    }
+
+}
 
 
 
@@ -158,7 +181,10 @@ fun loginScreen(
                 try{
                     login(user)
                     current_user = user
-                    println("Proof end")
+                    getProfile(user.googleId)
+
+                    Log.d("Json object", jsonProfile)
+
                     navController.navigate("home")
                 }catch(e: Exception){
                     Log.d("TutoacademyMa","ERROR while login")

@@ -1,5 +1,6 @@
 package com.reyprojects.tutoacademy_ma
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,11 +25,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 
 
 @Composable
-fun Profile(){
+fun Profile(navController: NavHostController){
+    if(jsonProfile.length==2 && navegated_profile==false){
+        try{
+            navegated_profile=true
+
+            navController.navigate(Destinos.Pantalla6.ruta)
+        }catch(e: Exception){
+            Log.d("Exception",e.toString())
+        }
+    }
     Column(
         modifier = Modifier.padding(20.dp)
     ){
@@ -114,8 +125,4 @@ fun ProfileTutoringSchedule(schedule: String){
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun ProfileScreen(){
-    Profile()
-}
+

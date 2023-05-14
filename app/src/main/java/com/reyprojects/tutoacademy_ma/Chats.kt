@@ -61,9 +61,6 @@ import com.reyprojects.tutoacademy_ma.type.UserInput
 
 
 var Chats:String= ""
-val parcial_message = "hola, necesito una tutoria"
-val sender = "Usuario Random"
-val receiver = "Miguel Angel Puentes"
 
 
 data class Message(val text: String, val sender: String)
@@ -72,27 +69,7 @@ data class AvailableChat(val googleid: String, val fullname: String, val image: 
 val AvailableChats = mutableListOf<AvailableChat>()
 var chat_global by mutableStateOf<AvailableChat?>(null)
 
-val messages = mutableListOf<Message>(
-    Message("Hola","sender"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("Hola","sender"),
-    Message("Hola","sender"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("holaaaa","receiver"),
-    Message("Hola, necesito una tutoria, pero erda vale mia eche monda pa fina xdddddddddd\"","sender")
-)
+val messages = mutableListOf<Message>()
 
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -119,6 +96,17 @@ fun getAllChats(id: String) = GlobalScope.async {
 
 @Composable
 fun Chats(navController: NavHostController){
+    if(jsonProfile.length==2 && navegated_profile==false){
+        try{
+
+            navegated_profile=true
+            navController.navigate(Destinos.Pantalla6.ruta)
+
+        }catch(e: Exception){
+            Log.d("Exception",e.toString())
+        }
+    }
+
 
     val scrollState = rememberLazyListState()
 
