@@ -1,13 +1,17 @@
 package com.reyprojects.tutoacademy_ma
 
 
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -29,8 +33,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.exception.ApolloException
+import com.reyprojects.tutoacademy_ma.type.ProfileInput
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 
 var gender = ""
@@ -39,21 +50,23 @@ var degree = ""
 
 @Composable
 fun profileForm(navHostController: NavHostController) {
-  profile_ss()
+  profile_ss(navHostController)
 }
 
-@Preview (showSystemUi = true)
+
 @Composable
-fun profile_ss(){
+fun profile_ss(navHostController: NavHostController){
+    val scrollState = rememberLazyListState()
 
 
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxSize(),
+            .fillMaxSize().background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
+
         Text("Crear Perfil",
         fontSize = 35.sp, fontWeight = FontWeight.Bold,
         color = Color(251, 196, 3))
@@ -77,6 +90,7 @@ fun profile_ss(){
             },
             label = { Text(text = "Apellido") },
             placeholder = { Text(text = "Ingresa tu apellido") },
+
         )
         Spacer(modifier=Modifier.height(20.dp))
         var email by remember { mutableStateOf(TextFieldValue("")) }
@@ -126,21 +140,66 @@ fun profile_ss(){
             Log.d("country",country)
             Log.d("date",date.text)
             Log.d("degree",degree)
+
+            val profile = ProfileInput(
+                userID = Optional.present(current_user?.googleId.toString()),
+                fullname = Optional.present("${name} ${lastname}"),
+                gender = Optional.present(gender),
+                nationality = Optional.present(country),
+                birthdate = Optional.present(date.text),
+                degree = Optional.present(degree),
+                skills = Optional.absent(),
+                schedule = Optional.absent()
+            )
+
+            try{
+                //CreateProfile(profile)
+                Thread.sleep(4000)
+                getProfile(current_user?.googleId.toString())
+
+                Thread.sleep(3000)
+
+            }catch(e: Exception){
+                Log.d("Create Profile Error",e.toString())
+            }
+
+
+
+
         }){
             Text("Crear Perfil")
         }
-        Button(onClick = {
 
-
-        }){
-            Text("Regresar")
-        }
 
 
     }
 
 
 }
+
+@OptIn(DelicateCoroutinesApi::class)
+fun CreateProfile(profile: ProfileInput) = GlobalScope.async {
+
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(urlGraph)
+            .build()
+        Log.d("Tuto","client builded well")
+
+        val response = apolloClient.mutation(CreateProfileMutation(profile)).execute()
+        Log.d("Mutation Profile",response.data.toString())
+
+
+
+
+
+    }catch (e: ApolloException){
+        Log.d("Query Profile Response",e.toString())
+    }
+
+}
+
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -190,16 +249,20 @@ fun SelectTagGender(){
                 // menu item
                 DropdownMenuItem(onClick = {
                     selectedItem = selectedOption
+                    gender = selectedOption
                     Toast.makeText(contextForToast, selectedOption, Toast.LENGTH_SHORT).show()
                     expanded = false
                 }) {
                     Text(text = selectedOption)
-                    gender = selectedOption
+
                 }
             }
         }
     }
 }
+
+
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -249,16 +312,18 @@ fun SelectTagDegree(){
                 // menu item
                 DropdownMenuItem(onClick = {
                     selectedItem = selectedOption
+                    degree = selectedOption
                     Toast.makeText(contextForToast, selectedOption, Toast.LENGTH_SHORT).show()
                     expanded = false
                 }) {
                     Text(text = selectedOption)
-                    degree = selectedOption
+
                 }
             }
         }
     }
 }
+
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -443,11 +508,12 @@ fun SelectTagCountry(){
                 // menu item
                 DropdownMenuItem(onClick = {
                     selectedItem = selectedOption
+                    country = selectedOption
                     Toast.makeText(contextForToast, selectedOption, Toast.LENGTH_SHORT).show()
                     expanded = false
                 }) {
                     Text(text = selectedOption)
-                    country = selectedOption
+
                 }
             }
         }

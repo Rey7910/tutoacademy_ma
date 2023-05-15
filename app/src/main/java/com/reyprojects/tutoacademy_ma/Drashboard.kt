@@ -1,6 +1,7 @@
 package com.reyprojects.tutoacademy_ma
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +14,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
@@ -33,8 +37,9 @@ import coil.compose.rememberImagePainter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-@Preview
 fun PantallaPrincipal(){
+
+
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
@@ -54,6 +59,7 @@ fun PantallaPrincipal(){
         it
         NavigationHost(navController)
     }
+
 
 }
 
@@ -88,10 +94,13 @@ private fun DrawerContent(
     scaffoldState: ScaffoldState,
     navController: NavHostController
 ) {
+    var itemsList = prepareNavigationDrawerItemsNoProfile()
 
-
-    val itemsList = prepareNavigationDrawerItems()
-
+    if(jsonProfile.length>2){
+        itemsList = prepareNavigationDrawerItems()
+    }else{
+        itemsList = prepareNavigationDrawerItemsNoProfile()
+    }
 
 
     LazyColumn(
@@ -186,8 +195,11 @@ private fun NavigationListItem(
 
     }
 }
+
 @Composable
 private fun prepareNavigationDrawerItems(): List<NavigationDrawerItem> {
+
+
     val itemsList = arrayListOf<NavigationDrawerItem>()
 
     itemsList.add(
@@ -222,6 +234,54 @@ private fun prepareNavigationDrawerItems(): List<NavigationDrawerItem> {
         NavigationDrawerItem(
             image = painterResource(id = R.drawable.logout),
             label = "Cerrar Sesión",
+
+            Route = "pantalla1"
+        )
+    )
+
+    return itemsList
+}
+
+
+@Composable
+private fun prepareNavigationDrawerItemsNoProfile(): List<NavigationDrawerItem> {
+
+
+    val itemsList = arrayListOf<NavigationDrawerItem>()
+
+    itemsList.add(
+        NavigationDrawerItem(
+            image = painterResource(id = Destinos.Pantalla1.image),
+            label = Destinos.Pantalla1.title,
+            Route = Destinos.Pantalla1.ruta
+        )
+    )
+    itemsList.add(
+        NavigationDrawerItem(
+            image = painterResource(id = Destinos.Pantalla2.image),
+            label = Destinos.Pantalla2.title,
+            Route = Destinos.Pantalla6.ruta
+        )
+    )
+    itemsList.add(
+        NavigationDrawerItem(
+            image = painterResource(id = Destinos.Pantalla3.image),
+            label = Destinos.Pantalla3.title,
+            Route = Destinos.Pantalla6.ruta
+        )
+    )
+    itemsList.add(
+        NavigationDrawerItem(
+            image = painterResource(id = Destinos.Pantalla4.image),
+            label = Destinos.Pantalla4.title,
+            Route = Destinos.Pantalla6.ruta
+        )
+    )
+    itemsList.add(
+        NavigationDrawerItem(
+            image = painterResource(id = R.drawable.logout),
+            label = "Cerrar Sesión",
+
             Route = "pantalla1"
         )
     )

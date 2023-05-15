@@ -57,6 +57,7 @@ import com.google.gson.Gson
 import com.reyprojects.tutoacademy_ma.type.ChatInput
 import com.reyprojects.tutoacademy_ma.type.MessageSchema
 import com.reyprojects.tutoacademy_ma.type.MessageSchemaInput
+import com.reyprojects.tutoacademy_ma.type.ProfileInput
 import com.reyprojects.tutoacademy_ma.type.UserInput
 
 
@@ -96,25 +97,19 @@ fun getAllChats(id: String) = GlobalScope.async {
 
 @Composable
 fun Chats(navController: NavHostController){
-    if(jsonProfile.length==2 && navegated_profile==false){
-        try{
 
-            navegated_profile=true
-            navController.navigate(Destinos.Pantalla6.ruta)
-
-        }catch(e: Exception){
-            Log.d("Exception",e.toString())
-        }
-    }
 
 
     val scrollState = rememberLazyListState()
 
     getAllChats(current_user?.googleId.toString())
+
+
     AvailableChats.clear()
 
     try{
         Log.d("Chat Tuto","Everything good")
+
         val jsonObject = JSONObject(Chats)
         val chatsArray = jsonObject.getJSONArray("getChatUser")
 

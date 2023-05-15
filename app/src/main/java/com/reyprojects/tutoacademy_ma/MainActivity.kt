@@ -118,6 +118,7 @@ fun login(user: UserInput) = GlobalScope.async {
 
 @OptIn(DelicateCoroutinesApi::class)
 fun getProfile(googleid: String) = GlobalScope.async {
+
     try{
         val apolloClient = ApolloClient.Builder()
             .serverUrl(urlGraph)
@@ -182,12 +183,13 @@ fun loginScreen(
                     login(user)
                     current_user = user
                     getProfile(user.googleId)
-
+                    getAllChats(current_user?.googleId.toString())
+                    Thread.sleep(4000)
                     Log.d("Json object", jsonProfile)
 
                     navController.navigate("home")
                 }catch(e: Exception){
-                    Log.d("TutoacademyMa","ERROR while login")
+                    Log.d("TutoacademyMa",e.toString())
                 }
 
 
