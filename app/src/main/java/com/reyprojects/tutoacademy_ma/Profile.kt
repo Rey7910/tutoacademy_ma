@@ -61,7 +61,7 @@ fun Profile(navController: NavHostController){
         Spacer(modifier = Modifier.height(20.dp))
         ProfileInfo()
         Spacer(modifier = Modifier.height(10.dp))
-        ProfileSkills(skills = "SkillA")
+        ProfileSkills(skills = "Crear Tuto Perfil \uD83D\uDE0E")
         Spacer(modifier = Modifier.height(10.dp))
         ProfileTutoringSchedule(schedule = "Lunes 4pm-6pm")
     }
