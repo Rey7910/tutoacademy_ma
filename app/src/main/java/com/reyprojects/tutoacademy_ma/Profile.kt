@@ -27,10 +27,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import org.json.JSONObject
 
+var fullnameProfile = "loaded"
+var genderProfile = "loaded"
+var nationalityProfile = "loaded"
+var descriptionProfile = "loaded"
+var degreeProfile = "loaded"
+var birthdateProfile = "loaded"
 
 @Composable
 fun Profile(navController: NavHostController){
+    Log.d("Json profile", jsonProfile)
+    try{
+        val jsonObjectGeneral = JSONObject(jsonProfile)
+        val jsonObject = jsonObjectGeneral.getJSONObject("getProfile")
+        fullnameProfile = jsonObject.getString("fullname")
+        genderProfile = jsonObject.getString("gender")
+        nationalityProfile = jsonObject.getString("nationality")
+        descriptionProfile = jsonObject.getString("description")
+        degreeProfile = jsonObject.getString("degree")
+        birthdateProfile = jsonObject.getString("birthdate")
+    }catch(e: Exception){
+        Log.d("Error Parsing Profile",e.toString())
+    }
+
+
 
     Column(
         modifier = Modifier.padding(20.dp)
@@ -77,11 +99,11 @@ fun ProfileInfo() {
                     5.dp
                 )
             )
-            Text("Genero: ")
-            Text("Fecha de nacimiento: ")
-            Text("Nacionalidad: ")
-            Text("Estudios: ")
-            Text("Descripción: ")
+            Text("Genero: ${genderProfile}")
+            Text("Fecha de nacimiento: ${birthdateProfile}")
+            Text("Nacionalidad: ${nationalityProfile}")
+            Text("Estudios: ${degreeProfile}")
+            Text("Descripción: ${descriptionProfile}")
         }
 }
 
