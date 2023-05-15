@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,11 +33,13 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -48,16 +51,27 @@ import com.google.firebase.auth.GoogleAuthProvider
 import androidx.navigation.compose.*
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
+import com.reyprojects.tutoacademy_ma.type.ProfileInput
+import com.reyprojects.tutoacademy_ma.type.ScheduleSchemaInput
+import com.reyprojects.tutoacademy_ma.type.SkillsSchemaInput
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.net.URL
 import com.apollographql.apollo3.api.Optional
+import com.google.gson.Gson
 import com.reyprojects.tutoacademy_ma.type.UserInput
+import org.json.JSONObject
 
-
+var profile = false
 var current_user by mutableStateOf<UserInput?>(null)
-
-
+var current_profile by mutableStateOf<ProfileInput?>(null)
+val urlGraph = "https://44be-186-84-88-227.ngrok-free.app/graphql"
+var jsonProfile = ""
+var navegated_profile = false
 class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -71,7 +85,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController, startDestination = "login") {
                         composable("login") {
-                            LoginScreen(navController)
+                            loginScreen(navController)
                         }
                         composable("home") {
                             PantallaPrincipal()
@@ -90,23 +104,44 @@ class MainActivity : ComponentActivity() {
 fun login(user: UserInput) = GlobalScope.async {
     try{
         val apolloClient = ApolloClient.Builder()
-            .serverUrl("https://933c-186-84-88-227.ngrok-free.app/graphql")
+            .serverUrl(urlGraph)
             .build()
         Log.d("Tuto","client builded well")
         //val response = apolloClient.query(GetUsersQuery()).execute()
         val response = apolloClient.mutation(LoginUserMutation(user)).execute()
-        Log.d("Query Response",response.data.toString())
+        Log.d("Query Login Response",response.data.toString())
     }catch (e: ApolloException){
-        Log.d("Query Response",e.toString())
+        Log.d("Query Login Response",e.toString())
+    }
+
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+fun getProfile(googleid: String) = GlobalScope.async {
+
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(urlGraph)
+            .build()
+        Log.d("Tuto","client builded well")
+
+        val response = apolloClient.query(GetProfileQuery(googleid)).execute()
+        Log.d("Query Profile Response",response.data.toString())
+
+        val gson = Gson()
+        jsonProfile = gson.toJson(response.data)
+        Log.d("Json loaded", jsonProfile)
+
+    }catch (e: ApolloException){
+        Log.d("Query Profile Response",e.toString())
     }
 
 }
 
 
 
-
 @Composable
-fun LoginScreen(
+fun loginScreen(
     navController: NavHostController,
     viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
@@ -144,15 +179,22 @@ fun LoginScreen(
                     updatedAt = Optional.absent()
                 )
 
+                try{
+                    login(user)
+                    current_user = user
+                    //getProfile("12344134")
+                    getProfile(user.googleId)
+                    getAllChats(current_user?.googleId.toString())
+                    //Thread.sleep(4000)
+                    Log.d("Json object", jsonProfile)
 
-                login(user)
+                    navController.navigate("home")
+                }catch(e: Exception){
+                    Log.d("TutoacademyMa",e.toString())
+                }
 
-                current_user = user
-
-                println("Proof end")
 
 
-                navController.navigate("home")
             }
         }catch(e: Exception){
             Log.d("TutoacademyMa","Something wrong")
@@ -209,8 +251,8 @@ fun LoginScreen(
                         .requestIdToken(token)
                         .requestEmail()
                         .build()
-                    val googleSignInClient = GoogleSignIn.getClient(context, options)
-                    launcher.launch(googleSignInClient.signInIntent)
+                    val GoogleSignInClient = GoogleSignIn.getClient(context, options)
+                    launcher.launch(GoogleSignInClient.signInIntent)
 
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
@@ -249,5 +291,4 @@ fun LoginScreen(
         }
     }
 }
-
 

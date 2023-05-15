@@ -1,5 +1,6 @@
 package com.reyprojects.tutoacademy_ma
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,14 +25,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 
 
 @Composable
-fun Profile(){
+fun Profile(navController: NavHostController){
+
     Column(
         modifier = Modifier.padding(20.dp)
     ){
-        ProfileImageAndName("Jessica")
+        ProfileImageAndName(current_user?.givenName.toString())
         Spacer(modifier = Modifier.height(20.dp))
         ProfileInfo()
         Spacer(modifier = Modifier.height(10.dp))
@@ -48,7 +52,8 @@ fun ProfileImageAndName(name: String){
         .padding(5.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(painterResource(R.drawable.chayanne),
+        Image(
+            rememberImagePainter(current_user?.imageUrl),
             contentDescription = "Imagen de perfil",
             modifier = Modifier
                 .padding(10.dp)
@@ -112,8 +117,4 @@ fun ProfileTutoringSchedule(schedule: String){
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun ProfileScreen(){
-    Profile()
-}
+

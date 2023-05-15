@@ -66,6 +66,28 @@ query allProfiles{
     }
 }
 
+query getProfile($id: String!){
+    getProfile(id: $id){
+        userID{
+            _id
+            googleId
+            createdAt
+            updatedAt
+        }
+
+        fullname
+        gender
+        birthdate
+        nationality
+        degree
+        description
+        creationdate
+        profilestatus
+        skills{skillname, score}
+        schedule{day, hours}
+    }
+}
+
 query findProfiles($value : String!){
     findProfiles(value: $value) {
         userID{
@@ -524,6 +546,7 @@ query getChatUser($name:String!){
             userID{
                 _id
                 googleId
+                imageUrl
                 createdAt
                 updatedAt
             }
@@ -542,6 +565,7 @@ query getChatUser($name:String!){
         receiver{
             userID{
                 _id
+                imageUrl
                 googleId
                 createdAt
                 updatedAt
@@ -561,6 +585,7 @@ query getChatUser($name:String!){
         messages {messageId,sender{
             userID{
                 _id
+                imageUrl
                 googleId
                 createdAt
                 updatedAt
