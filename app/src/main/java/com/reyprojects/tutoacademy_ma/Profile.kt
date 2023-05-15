@@ -31,16 +31,7 @@ import coil.compose.rememberImagePainter
 
 @Composable
 fun Profile(navController: NavHostController){
-    /*
-    if(jsonProfile.length==2 && navegated_profile==false){
-        try{
-            navegated_profile=true
 
-            navController.navigate(Destinos.Pantalla6.ruta)
-        }catch(e: Exception){
-            Log.d("Exception",e.toString())
-        }
-    }*/
     Column(
         modifier = Modifier.padding(20.dp)
     ){

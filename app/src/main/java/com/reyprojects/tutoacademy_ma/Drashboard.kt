@@ -94,13 +94,9 @@ private fun DrawerContent(
     scaffoldState: ScaffoldState,
     navController: NavHostController
 ) {
-    var itemsList = prepareNavigationDrawerItemsNoProfile()
+    var itemsList = prepareNavigationDrawerItems()
 
-    if(jsonProfile.length>2){
-        itemsList = prepareNavigationDrawerItems()
-    }else{
-        itemsList = prepareNavigationDrawerItemsNoProfile()
-    }
+
 
 
     LazyColumn(
@@ -164,7 +160,19 @@ private fun NavigationListItem(
             .fillMaxWidth()
             .clickable {
             },
-        onClick = { onItemClick( item )}
+        onClick = {
+
+            if((item.Route == Destinos.Pantalla4.ruta ||  item.Route == Destinos.Pantalla2.ruta || item.Route == Destinos.Pantalla3.ruta)  && jsonProfile.length<=2 && profile==false){
+                item.Route = Destinos.Pantalla6.ruta
+            }else if(item.Route == Destinos.Pantalla6.ruta && jsonProfile.length>2 && profile==false ){
+                if(item.label == "Perfiles") item.Route = Destinos.Pantalla2.ruta
+                if(item.label == "Mis tutorias") item.Route = Destinos.Pantalla3.ruta
+                if(item.label == "Chats") item.Route = Destinos.Pantalla4.ruta
+                profile = true
+            }
+
+            onItemClick( item )
+        }
     ) {
 
         Row(
@@ -292,5 +300,5 @@ private fun prepareNavigationDrawerItemsNoProfile(): List<NavigationDrawerItem> 
 data class NavigationDrawerItem(
     val image: Painter,
     val label: String,
-    val Route: String,
+    var Route: String,
 )

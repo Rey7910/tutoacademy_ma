@@ -33,9 +33,7 @@ fun  NavigationHost ( navController: NavHostController){
         composable(Pantalla7.ruta){
             profileForm(navController)
         }
-        composable(Pantalla8.ruta){
-            PantallaPrincipal()
-        }
+
 
 
     }

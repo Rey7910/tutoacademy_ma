@@ -44,9 +44,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
 
-var gender = ""
-var country = ""
-var degree = ""
+var gender = "Masculino"
+var country = "Afghanistan"
+var degree = "Primaria"
 
 @Composable
 fun profileForm(navHostController: NavHostController) {
@@ -153,11 +153,14 @@ fun profile_ss(navHostController: NavHostController){
             )
 
             try{
-                //CreateProfile(profile)
+                CreateProfile(profile)
                 Thread.sleep(4000)
+                jsonProfile="Waiting for being assigned"
                 getProfile(current_user?.googleId.toString())
 
                 Thread.sleep(3000)
+                navHostController.navigate("pantalla1")
+
 
             }catch(e: Exception){
                 Log.d("Create Profile Error",e.toString())
