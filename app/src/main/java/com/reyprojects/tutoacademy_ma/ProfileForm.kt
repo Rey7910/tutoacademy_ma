@@ -141,6 +141,13 @@ fun profile_ss(navHostController: NavHostController){
             Log.d("date",date.text)
             Log.d("degree",degree)
 
+            if(gender == "Masculino") gender="male"
+            else if(gender == "Femenino") gender = "female"
+            else if(gender =="Otro") gender = "other"
+
+            if(degree == "Maestría o más") degree="Maestria"
+
+
             val profile = ProfileInput(
                 userID = Optional.present(current_user?.googleId.toString()),
                 fullname = Optional.present("${name} ${lastname}"),
@@ -151,6 +158,8 @@ fun profile_ss(navHostController: NavHostController){
                 skills = Optional.absent(),
                 schedule = Optional.absent()
             )
+
+
 
             try{
                 CreateProfile(profile)
