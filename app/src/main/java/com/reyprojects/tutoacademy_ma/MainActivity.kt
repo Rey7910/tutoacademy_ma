@@ -182,8 +182,8 @@ fun loginScreen(
                 try{
                     login(user)
                     current_user = user
-                    //getProfile("12344134")
-                    getProfile(user.googleId)
+                    getProfile("12344134")
+                    //getProfile(user.googleId)
                     getAllChats(current_user?.googleId.toString())
                     //Thread.sleep(4000)
                     Log.d("Json object", jsonProfile)

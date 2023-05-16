@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -63,12 +66,12 @@ fun profile_ss(navHostController: NavHostController){
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxSize().background(Color.White),
+            .fillMaxSize().background(Color.White).verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
 
         Text("Crear Perfil",
-        fontSize = 35.sp, fontWeight = FontWeight.Bold,
+        fontSize = 25.sp, fontWeight = FontWeight.Bold,
         color = Color(251, 196, 3))
         Spacer(modifier=Modifier.height(10.dp))
         var name by remember { mutableStateOf(TextFieldValue("")) }
@@ -111,6 +114,7 @@ fun profile_ss(navHostController: NavHostController){
             },
             label = { Text(text = "Descripción") },
             placeholder = { Text(text = "Cuéntanos un poco sobre ti") },
+            modifier = Modifier.width(255.dp)
         )
         Spacer(modifier=Modifier.height(20.dp))
 
@@ -181,6 +185,7 @@ fun profile_ss(navHostController: NavHostController){
         }){
             Text("Crear Perfil")
         }
+        Spacer(modifier=Modifier.height(20.dp))
 
 
 

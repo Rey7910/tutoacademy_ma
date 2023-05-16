@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +28,9 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun missingProfile(navHostController: NavHostController){
-    Column(modifier =Modifier.fillMaxWidth().background(Color.White).fillMaxSize()){
+    Column(modifier =Modifier.fillMaxWidth().background(Color.White).fillMaxSize().verticalScroll(
+        rememberScrollState()
+    )){
         Image(
             painterResource(R.drawable.doubtlogo),
             contentDescription = null,
