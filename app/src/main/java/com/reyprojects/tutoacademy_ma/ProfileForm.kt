@@ -156,13 +156,15 @@ fun profile_ss(navHostController: NavHostController){
 
             val profile = ProfileInput(
                 userID = Optional.present(current_user?.googleId.toString()),
-                fullname = Optional.present("${name} ${lastname}"),
+                fullname = Optional.present("${name.text} ${lastname.text}"),
+                description = Optional.present(description.text),
                 gender = Optional.present(gender),
                 nationality = Optional.present(country),
                 birthdate = Optional.present(date.text),
                 degree = Optional.present(degree),
                 skills = Optional.absent(),
-                schedule = Optional.absent()
+                schedule = Optional.absent(),
+                creationdate = Optional.absent()
             )
 
 
