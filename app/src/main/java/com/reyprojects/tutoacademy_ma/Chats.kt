@@ -202,7 +202,7 @@ fun ChatContent(navController: NavHostController){
     Column{
 
         headerChat(chat_global, navController)
-
+        Spacer(modifier = Modifier.height(20.dp))
         LazyColumn(
             state = scrollState,
             modifier = Modifier.weight(1f),
@@ -362,7 +362,7 @@ fun headerChat(chat: AvailableChat?, navController: NavHostController){
                 if(chat?.fullname!=null){
                     fullname = chat?.fullname
                 }
-                Text(text = fullname, fontSize = 20.sp)
+                Text(text = fullname, fontSize = 15.sp)
             }
 
         }
@@ -396,6 +396,7 @@ fun sendButton(modifier: Modifier) {
 
                     addMessage(text.text)
 
+
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(251, 196, 3),
@@ -403,7 +404,13 @@ fun sendButton(modifier: Modifier) {
                 ) ,modifier = Modifier.padding(top = 4.dp, start = 5.dp)
 
             ) {
-                Text(text = "enviar")
+                Image(
+                    painterResource(R.drawable.send),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(40.dp)
+
+                )
             }
         }
     }

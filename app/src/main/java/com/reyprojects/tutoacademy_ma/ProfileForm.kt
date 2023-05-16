@@ -93,7 +93,7 @@ fun profile_ss(navHostController: NavHostController){
             },
             label = { Text(text = "Apellido") },
             placeholder = { Text(text = "Ingresa tu apellido") },
-
+            modifier = Modifier.width(275.dp)
         )
         Spacer(modifier=Modifier.height(20.dp))
         var email by remember { mutableStateOf(TextFieldValue("")) }
@@ -104,6 +104,7 @@ fun profile_ss(navHostController: NavHostController){
             },
             label = { Text(text = "Correo") },
             placeholder = { Text(text = "Ingresa tu correo") },
+            modifier = Modifier.width(275.dp)
         )
         Spacer(modifier=Modifier.height(20.dp))
         var description by remember { mutableStateOf(TextFieldValue("")) }
@@ -114,7 +115,7 @@ fun profile_ss(navHostController: NavHostController){
             },
             label = { Text(text = "Descripción") },
             placeholder = { Text(text = "Cuéntanos un poco sobre ti") },
-            modifier = Modifier.width(255.dp)
+            modifier = Modifier.width(275.dp)
         )
         Spacer(modifier=Modifier.height(20.dp))
 
@@ -130,6 +131,7 @@ fun profile_ss(navHostController: NavHostController){
             },
             label = { Text(text = "Fecha de nacimiento") },
             placeholder = { Text(text = "dd/mm/aa") },
+            modifier = Modifier.width(275.dp)
         )
         Spacer(modifier=Modifier.height(20.dp))
         SelectTagDegree()
@@ -252,7 +254,9 @@ fun SelectTagGender(){
                     expanded = expanded
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier.width(275.dp)
+
         )
 
         // menu
@@ -315,7 +319,8 @@ fun SelectTagDegree(){
                     expanded = expanded
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier.width(275.dp)
         )
 
         // menu
@@ -511,7 +516,8 @@ fun SelectTagCountry(){
                     expanded = expanded
                 )
             },
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
+            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            modifier = Modifier.width(275.dp)
         )
 
         // menu

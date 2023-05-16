@@ -185,7 +185,7 @@ fun loginScreen(
                     //getProfile("12344134")
                     getProfile(user.googleId)
                     getAllChats(current_user?.googleId.toString())
-                    //Thread.sleep(4000)
+
                     Log.d("Json object", jsonProfile)
 
                     navController.navigate("home")
