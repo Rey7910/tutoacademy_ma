@@ -34,26 +34,6 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import coil.compose.rememberImagePainter
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
-import com.reyprojects.tutoacademy_ma.type.UserInput
-import kotlinx.coroutines.Dispatchers
-
-
-fun ApolloCliente(peticion: String) = CoroutineScope(Dispatchers.Default).launch {
-    try{
-        val apolloClient = ApolloClient.Builder()
-            .serverUrl(urlGraph)
-            .build()
-        Log.d("Tuto","client builded well")
-        //val response = apolloClient.query(GetUsersQuery()).execute()
-        val response = apolloClient.mutation(LoginUserMutation(user)).execute()
-        Log.d("Query Login Response",response.data.toString())
-    }catch (e: ApolloException){
-        Log.d("Query Login Response",e.toString())
-    }
-
-}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

@@ -154,8 +154,8 @@ fun loginScreen(
     val launcher = rememberLauncherForActivityResult(
         contract =
         ActivityResultContracts.StartActivityForResult()
-    ){navController.navigate("home")
-      /*  val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+    ){
+        val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
         try{
             val account = task.getResult(ApiException::class.java)
             //val coroutineScope = rememberCoroutineScope()
@@ -197,10 +197,8 @@ fun loginScreen(
 
             }
         }catch(e: Exception){
-            Log.d("TutoacademyMa","Something wrong: " + e.message)
+            Log.d("TutoacademyMa","Something wrong")
         }
-
-       */
     }
     LaunchedEffect(Unit) {
         while (true) {
