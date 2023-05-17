@@ -69,7 +69,7 @@ import org.json.JSONObject
 var profile = false
 var current_user by mutableStateOf<UserInput?>(null)
 var current_profile by mutableStateOf<ProfileInput?>(null)
-val urlGraph = "https://44be-186-84-88-227.ngrok-free.app/graphql"
+val urlGraph = "https://3ec1-186-84-88-227.ngrok-free.app/graphql"
 var jsonProfile = ""
 var navegated_profile = false
 class MainActivity : ComponentActivity() {
@@ -185,7 +185,7 @@ fun loginScreen(
                     //getProfile("12344134")
                     getProfile(user.googleId)
                     getAllChats(current_user?.googleId.toString())
-                    //Thread.sleep(4000)
+
                     Log.d("Json object", jsonProfile)
 
                     navController.navigate("home")
@@ -267,7 +267,7 @@ fun loginScreen(
                     contentDescription ="google button icon",
                     modifier = Modifier.size(23.dp)
                 )
-                Spacer(modifier = Modifier.width(15.dp))
+                Spacer(modifier = Modifier.width(13.dp))
                 Text(text = "Inicia sesión con",
                     color = Color.White,
                     fontSize =  15.sp,

@@ -26,10 +26,13 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,6 +62,7 @@ import com.reyprojects.tutoacademy_ma.type.MessageSchema
 import com.reyprojects.tutoacademy_ma.type.MessageSchemaInput
 import com.reyprojects.tutoacademy_ma.type.ProfileInput
 import com.reyprojects.tutoacademy_ma.type.UserInput
+import kotlinx.coroutines.delay
 
 
 var Chats:String= ""
@@ -195,14 +199,96 @@ fun Chats(navController: NavHostController){
 
 }
 
+
+
+fun reloadInside(){
+
+    getAllChats(current_user?.googleId.toString())
+
+
+    AvailableChats.clear()
+
+    try{
+        Log.d("Chat Tuto","Everything good")
+
+        val jsonObject = JSONObject(Chats)
+        val chatsArray = jsonObject.getJSONArray("getChatUser")
+
+
+        for (i in 0 until chatsArray.length()) {
+            val chatObject = chatsArray.getJSONObject(i)
+            val chatId = chatObject.getInt("chatId")
+            Log.d("TutoGod", chatId.toString())
+            val fullname_sender = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("sender")
+                .getString("fullname")
+            Log.d("full name sender", fullname_sender)
+            val id_sender = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("sender")
+                .getJSONObject("userID").getString("googleId")
+            Log.d("id sender ", id_sender)
+            val image_sender = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("sender")
+                .getJSONObject("userID").getString("imageUrl")
+            Log.d("id sender ", image_sender)
+            val fullname_receiver = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("receiver")
+                .getString("fullname")
+            Log.d("fullname receiver", fullname_receiver)
+            val id_receiver = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("receiver")
+                .getJSONObject("userID").getString("googleId")
+            Log.d("TutoGod", id_receiver)
+            val image_receiver = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONObject("receiver")
+                .getJSONObject("userID").getString("imageUrl")
+            Log.d("id sender ", image_receiver)
+
+            if(id_sender!= current_user?.googleId.toString()){
+                val chat = AvailableChat(id_sender, fullname_sender, image_sender)
+                AvailableChats.add(chat)
+            }else{
+                val chat = AvailableChat(id_receiver, fullname_receiver, image_receiver)
+                AvailableChats.add(chat)
+            }
+
+        }
+
+
+
+
+    }catch(e: Exception){
+        Log.d("TutoAAAA",e.toString())
+
+    }
+}
+
+
+
 @Composable
 fun ChatContent(navController: NavHostController){
     val scrollState = rememberLazyListState()
 
+    var shouldReload by remember { mutableStateOf(true) }
+
+    LaunchedEffect(shouldReload) {
+        while (true) {
+            delay(5000)
+            reloadInside()
+            chargeMessagesInside(chat_global)
+            shouldReload = !shouldReload
+        }
+    }
     Column{
 
         headerChat(chat_global, navController)
-
+        Spacer(modifier = Modifier.height(20.dp))
         LazyColumn(
             state = scrollState,
             modifier = Modifier.weight(1f),
@@ -362,7 +448,7 @@ fun headerChat(chat: AvailableChat?, navController: NavHostController){
                 if(chat?.fullname!=null){
                     fullname = chat?.fullname
                 }
-                Text(text = fullname, fontSize = 20.sp)
+                Text(text = fullname, fontSize = 15.sp)
             }
 
         }
@@ -395,6 +481,7 @@ fun sendButton(modifier: Modifier) {
                 onClick = {
 
                     addMessage(text.text)
+                    text = TextFieldValue("")
 
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -403,7 +490,13 @@ fun sendButton(modifier: Modifier) {
                 ) ,modifier = Modifier.padding(top = 4.dp, start = 5.dp)
 
             ) {
-                Text(text = "enviar")
+                Image(
+                    painterResource(R.drawable.send),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(40.dp)
+
+                )
             }
         }
     }
@@ -433,6 +526,59 @@ fun chargeMessages(chat: AvailableChat){
         Log.d("TutoGod", id_receiver)
 
         if(id_receiver==chat.googleid || id_sender==chat.googleid){
+            val msg = jsonObject.getJSONArray("getChatUser")
+                .getJSONObject(i)
+                .getJSONArray("messages")
+            println(msg)
+            for(j in msg.length() - 1 downTo 0) {
+                val messageObj = msg.getJSONObject(j)
+                // haz algo con el objeto del mensaje, por ejemplo imprimir el cuerpo
+                val body = messageObj.getString("body")
+                val id_sender = messageObj
+                    .getJSONObject("sender")
+                    .getJSONObject("userID").getString("googleId")
+
+                if(id_sender== current_user?.googleId){
+                    print("I sent the next message")
+                    println(body)
+                    messages.add(Message(body,"sender"))
+                }else{
+                    print("Someone sent me the message below")
+                    println(body)
+                    messages.add(Message(body,"receiver"))
+                }
+
+            }
+            break
+        }
+
+
+    }
+    Log.d("God","finished")
+}
+
+fun chargeMessagesInside(chat: AvailableChat?){
+
+    println("Charging messages")
+    messages.clear()
+    val jsonObject = JSONObject(Chats)
+    val chatsArray = jsonObject.getJSONArray("getChatUser")
+    for (i in 0 until chatsArray.length()) {
+        val chatObject = chatsArray.getJSONObject(i)
+
+        val id_sender = jsonObject.getJSONArray("getChatUser")
+            .getJSONObject(i)
+            .getJSONObject("sender")
+            .getJSONObject("userID").getString("googleId")
+        Log.d("id sender ", id_sender)
+
+        val id_receiver = jsonObject.getJSONArray("getChatUser")
+            .getJSONObject(i)
+            .getJSONObject("receiver")
+            .getJSONObject("userID").getString("googleId")
+        Log.d("TutoGod", id_receiver)
+
+        if(id_receiver==chat?.googleid || id_sender==chat?.googleid){
             val msg = jsonObject.getJSONArray("getChatUser")
                 .getJSONObject(i)
                 .getJSONArray("messages")
