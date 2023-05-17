@@ -16,14 +16,7 @@ import androidx.navigation.NavHostController
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Mi_Tutoria(navController: NavHostController){
-    if(jsonProfile.length==2 && navegated_profile==false ){
-        try{
-            navegated_profile=true
-            navController.navigate(Destinos.Pantalla6.ruta)
-        }catch(e: Exception){
-            Log.d("Exception",e.toString())
-        }
-    }
+
 
     Column(modifier = Modifier.fillMaxSize().padding(10.dp)) {
         CalendarMobile()

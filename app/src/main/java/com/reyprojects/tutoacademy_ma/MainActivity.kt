@@ -66,12 +66,10 @@ import com.google.gson.Gson
 import com.reyprojects.tutoacademy_ma.type.UserInput
 import org.json.JSONObject
 
-
+var profile = false
 var current_user by mutableStateOf<UserInput?>(null)
-val urlGraph = "https://d21c-190-250-214-188.ngrok-free.app/graphql"
-
 var current_profile by mutableStateOf<ProfileInput?>(null)
-val urlGraph = "https://b636-186-84-88-227.ngrok-free.app/graphql"
+val urlGraph = "https://3ec1-186-84-88-227.ngrok-free.app/graphql"
 var jsonProfile = ""
 var navegated_profile = false
 class MainActivity : ComponentActivity() {
@@ -120,6 +118,7 @@ fun login(user: UserInput) = GlobalScope.async {
 
 @OptIn(DelicateCoroutinesApi::class)
 fun getProfile(googleid: String) = GlobalScope.async {
+
     try{
         val apolloClient = ApolloClient.Builder()
             .serverUrl(urlGraph)
@@ -183,13 +182,15 @@ fun loginScreen(
                 try{
                     login(user)
                     current_user = user
+                    //getProfile("12344134")
                     getProfile(user.googleId)
+                    getAllChats(current_user?.googleId.toString())
 
                     Log.d("Json object", jsonProfile)
 
                     navController.navigate("home")
                 }catch(e: Exception){
-                    Log.d("TutoacademyMa","ERROR while login")
+                    Log.d("TutoacademyMa",e.toString())
                 }
 
 
@@ -264,7 +265,7 @@ fun loginScreen(
                     contentDescription ="google button icon",
                     modifier = Modifier.size(23.dp)
                 )
-                Spacer(modifier = Modifier.width(15.dp))
+                Spacer(modifier = Modifier.width(13.dp))
                 Text(text = "Inicia sesión con",
                     color = Color.White,
                     fontSize =  15.sp,
