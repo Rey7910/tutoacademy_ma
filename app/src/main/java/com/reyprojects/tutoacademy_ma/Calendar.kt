@@ -2,11 +2,15 @@ package com.reyprojects.tutoacademy_ma
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -32,8 +37,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.ParentDataModifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.reyprojects.tutoacademy_ma.ui.theme.WeekScheduleTheme
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -58,7 +66,43 @@ fun CalendarMobile() {
 
     WeekScheduleTheme {
         Surface(color = MaterialTheme.colors.background) {
-            Schedule(events = sampleEvents)
+            if (sampleEvents.isNotEmpty()){
+
+                Schedule(events = sampleEvents)
+
+            }
+            else {
+
+                Column(modifier =Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .fillMaxSize()
+                    .verticalScroll(
+                    rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ){
+                    Image(
+                        painterResource(R.drawable.doubtlogo),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .height(247.dp)
+                            .width(322.dp).align(Alignment.CenterHorizontally)
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = "No tienes ninguna reunión programada",
+                        fontSize = 30.sp,
+                        color = Color(251, 196, 3),
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+
+                    
+                }
+                
+            }
+
         }
     }
 
@@ -89,7 +133,10 @@ fun BasicEvent(
     Column(
         modifier = modifier
             .padding(end = 2.dp, bottom = 2.dp)
-            .background(colorResource(id = R.color.background_event), shape = RoundedCornerShape(4.dp))
+            .background(
+                colorResource(id = R.color.background_event),
+                shape = RoundedCornerShape(4.dp)
+            )
             .padding(4.dp)
 
     ) {
