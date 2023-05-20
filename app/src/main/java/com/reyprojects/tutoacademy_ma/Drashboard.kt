@@ -60,11 +60,8 @@ fun PantallaPrincipal(mainViewModel: MainViewModel){
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
 
-    current_user?.googleId?.let { getSingleProfile(it) }
 
-
-
-
+    
 
 
     Scaffold(
