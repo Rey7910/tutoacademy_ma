@@ -71,6 +71,7 @@ query getProfile($id: String!){
         userID{
             _id
             googleId
+            imageUrl
             createdAt
             updatedAt
         }
@@ -93,6 +94,7 @@ query findProfiles($value : String!){
         userID{
             _id
             googleId
+            imageUrl
             createdAt
             updatedAt
         }
