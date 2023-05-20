@@ -43,7 +43,7 @@ var descriptionProfile = "loaded"
 var degreeProfile = "loaded"
 var birthdateProfile = "loaded"
 var jsonSingleProfile = JsonObject()
-
+var Url = ""
 @Composable
 fun Profile(navController: NavHostController, userId: String){
 
@@ -59,6 +59,8 @@ fun Profile(navController: NavHostController, userId: String){
     val profile = jsonSingleProfile.toString()
 
 
+
+
     try{
         val jsonObjectGeneral = JSONObject(profile)
         val jsonObject = jsonObjectGeneral.getJSONObject("getProfile")
@@ -68,6 +70,10 @@ fun Profile(navController: NavHostController, userId: String){
         descriptionProfile = jsonObject.getString("description")
         degreeProfile = jsonObject.getString("degree")
         birthdateProfile = jsonObject.getString("birthdate")
+
+        Url = jsonObject.getJSONObject("userID").getString("imageUrl")
+
+
     }catch(e: Exception){
         Log.d("Error Parsing Profile",e.toString())
     }
@@ -80,7 +86,7 @@ fun Profile(navController: NavHostController, userId: String){
             .verticalScroll(rememberScrollState())
 
     ){
-        ProfileImageAndName(current_user?.givenName.toString())
+        ProfileImageAndName(fullnameProfile, Url)
         Spacer(modifier = Modifier.height(20.dp))
         ProfileInfo()
         Spacer(modifier = Modifier.height(10.dp))
@@ -98,14 +104,14 @@ fun Profile(navController: NavHostController, userId: String){
 
 
 @Composable
-fun ProfileImageAndName(name: String){
+fun ProfileImageAndName(name: String, ImageUrl : String){
     Column(modifier = Modifier
         .background(colorResource(id = R.color.light_orange))
         .padding(5.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
-            rememberImagePainter(current_user?.imageUrl),
+            rememberImagePainter(ImageUrl),
             contentDescription = "Imagen de perfil",
             modifier = Modifier
                 .padding(10.dp)
