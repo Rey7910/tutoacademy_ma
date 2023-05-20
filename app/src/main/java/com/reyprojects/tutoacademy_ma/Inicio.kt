@@ -52,10 +52,12 @@ fun Initio(navHostController: NavHostController){
 
 
     getRequests()
+    getProfiles()
+
+    Log.d("Perfiles ", jsonAllProfiles.toString())
 
     sampleEvents.clear()
 
-    Log.d("User ", ""+ current_user?.googleId)
 
     if (jsonProfile.isNotEmpty()){
         profile = true

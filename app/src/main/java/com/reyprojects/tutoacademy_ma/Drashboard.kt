@@ -60,7 +60,10 @@ fun PantallaPrincipal(mainViewModel: MainViewModel){
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
 
-    getProfiles()
+    current_user?.googleId?.let { getSingleProfile(it) }
+
+
+
 
 
 
@@ -422,7 +425,7 @@ private fun prepareNavigationDrawerItems(): List<NavigationDrawerItem> {
         NavigationDrawerItem(
             image = painterResource(id = Destinos.Pantalla2.image),
             label = Destinos.Pantalla2.title,
-            Route = Destinos.Pantalla2.ruta
+            Route = "${Destinos.Pantalla2.ruta}/${current_user?.googleId}"
         )
     )
     itemsList.add(

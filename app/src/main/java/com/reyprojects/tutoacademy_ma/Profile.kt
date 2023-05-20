@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.google.gson.JsonObject
 import org.json.JSONObject
 
 var fullnameProfile = "loaded"
@@ -41,10 +42,23 @@ var nationalityProfile = "loaded"
 var descriptionProfile = "loaded"
 var degreeProfile = "loaded"
 var birthdateProfile = "loaded"
+var jsonSingleProfile = JsonObject()
 
 @Composable
-fun Profile(navController: NavHostController, profile: String){
-    Log.d("Json profile", profile)
+fun Profile(navController: NavHostController, userId: String){
+
+
+
+    getSingleProfile(userId)
+
+    Log.d("UserId", jsonSingleProfile.toString())
+
+
+
+
+    val profile = jsonSingleProfile.toString()
+
+
     try{
         val jsonObjectGeneral = JSONObject(profile)
         val jsonObject = jsonObjectGeneral.getJSONObject("getProfile")

@@ -64,6 +64,29 @@ fun getProfiles() = GlobalScope.async {
 
 }
 
+fun getSingleProfile(googleid: String) = GlobalScope.async {
+
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(urlGraph)
+            .build()
+
+
+        val response = apolloClient.query(GetProfileQuery(googleid)).execute()
+
+
+        val gson = Gson()
+        jsonSingleProfile = JsonParser.parseString( gson.toJson(response.data)) as JsonObject
+
+
+
+
+    }catch (e: ApolloException){
+        Log.d("Query Profile Response",e.toString())
+    }
+
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun getDateStart(time: String): String{
 

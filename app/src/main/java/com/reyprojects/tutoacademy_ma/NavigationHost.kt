@@ -15,8 +15,11 @@ fun  NavigationHost ( navController: NavHostController){
         composable(Pantalla1.ruta){
             Initio(navController)
         }
-        composable(Pantalla2.ruta){
-            Profile(navController, jsonProfile)
+        composable("${Pantalla2.ruta}/{userId}"){
+                backStackEntry ->
+            backStackEntry.arguments?.getString("userId")
+                ?.let { Profile(navController, it) }
+
         }
         composable(Pantalla3.ruta){
             Mi_Tutoria(navController)
