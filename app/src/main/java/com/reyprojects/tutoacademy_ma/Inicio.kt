@@ -44,7 +44,6 @@ import java.time.LocalDateTime
 
 
 var jsonRequest = JsonObject()
-
 val sampleEvents = mutableListOf<Event>()
 @SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)

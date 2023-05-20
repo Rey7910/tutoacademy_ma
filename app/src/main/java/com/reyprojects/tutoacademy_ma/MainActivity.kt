@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
                             loginScreen(navController)
                         }
                         composable("home") {
-                            PantallaPrincipal()
+                            PantallaPrincipal(mainViewModel = MainViewModel())
                         }
                     }
 
