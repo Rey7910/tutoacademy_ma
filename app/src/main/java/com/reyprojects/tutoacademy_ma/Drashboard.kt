@@ -10,21 +10,30 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,20 +43,65 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import coil.compose.rememberImagePainter
+import com.google.gson.JsonObject
 
+
+var jsonAllProfiles = JsonObject()
+var screenActual = ""
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PantallaPrincipal(){
+fun PantallaPrincipal(mainViewModel: MainViewModel){
+
+    val searchWidgetState by mainViewModel.searchWidgetState
+    val searchTextState by mainViewModel.searchTextState
 
 
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
 
+    getProfiles()
+
+
+
     Scaffold(
 
         scaffoldState = scaffoldState,
-        topBar = {TopBar(scope, scaffoldState)},
+        topBar = {
+                 MainAppBar(
+                     searchWidgetState = searchWidgetState,
+                     searchTextState = searchTextState,
+                     onTextChange = {
+                                    mainViewModel.updateSearchTextState(newValue = it)
+                     },
+                     onCloseClicked = {
+                         mainViewModel.updateSearchTextState(newValue = "")
+                         mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.CLOSED)
+
+
+                         if (screenActual.isNotEmpty()){
+                             navController.navigate(screenActual)
+                         } else{
+
+                             navController.navigate(Destinos.Pantalla1.ruta)
+
+                         }
+
+
+                     },
+                     onSearchClicked = {
+                                       Log.d("Searched Text", it)
+                     },
+                     onSearchTriggered = {
+
+                         mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
+                         Log.d("Context", navController.toString())
+                         navController.navigate(Destinos.Pantalla8.ruta)
+                     },
+                     scope = scope,
+                     scaffoldState = scaffoldState
+                 )
+                 },
         drawerContent = {  DrawerContent(
             scope,
             scaffoldState,
@@ -58,15 +112,49 @@ fun PantallaPrincipal(){
     ){
         it
         NavigationHost(navController)
+
     }
 
 
 }
 
 @Composable
-fun TopBar(
+fun MainAppBar(
+    searchWidgetState: SearchWidgetState,
+    searchTextState: String,
+    onTextChange: (String) -> Unit,
+    onCloseClicked: () -> Unit,
+    onSearchClicked: (String) -> Unit,
+    onSearchTriggered: () -> Unit,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState
+){
+    when(searchWidgetState){
+        SearchWidgetState.CLOSED -> {
+            TopBar(
+                scope = scope, 
+                scaffoldState = scaffoldState,
+                onSearchClicked = onSearchTriggered
+            )
+        }
+        SearchWidgetState.OPENED -> {
+
+            SearchAppBar(
+                text = searchTextState,
+                onTextChange = onTextChange,
+                onCloseClicked = onCloseClicked,
+                onSearchClicked = onSearchClicked
+            )
+
+        }
+    }
+}
+
+@Composable
+fun TopBar(
+    scope: CoroutineScope,
+    scaffoldState: ScaffoldState,
+    onSearchClicked: () -> Unit
 ){
     TopAppBar (
 
@@ -80,11 +168,122 @@ fun TopBar(
             }
         },
         actions = {
+            
+            IconButton(onClick = { onSearchClicked() }) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Search Icon",
+                    tint = Color.Black
+                )
+            }
+
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = null,
             )
+
+
+
         }
+    )
+}
+
+
+@Composable
+fun SearchAppBar(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onCloseClicked: () -> Unit,
+    onSearchClicked: (String) -> Unit
+){
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        elevation = AppBarDefaults.TopAppBarElevation,
+        color = colorResource(id=R.color.white)
+    ) {
+
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = text,
+            onValueChange = {
+                onTextChange(it)
+            },
+            placeholder = {
+                Text(
+                    modifier = Modifier
+                        .alpha(ContentAlpha.medium),
+                    text = "Search here...",
+                    color = Color.Black
+                )
+            },
+            textStyle = TextStyle(
+                fontSize = MaterialTheme.typography.subtitle1.fontSize
+            ),
+            singleLine = true,
+            leadingIcon = {
+                IconButton(
+                    modifier = Modifier
+                        .alpha(ContentAlpha.medium),
+                    onClick = {}
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search Icon",
+                        tint = Color.Black
+                    )
+                    
+                }
+            },
+            trailingIcon = {
+                
+                IconButton(
+                    onClick = {
+                        if(text.isNotEmpty()){
+                            onTextChange("")
+                        } else {
+                            onCloseClicked()
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close Icon",
+                        tint = Color.Black
+                    )
+
+                }
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    onSearchClicked(text)
+                }
+            ),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                cursorColor = Color.White.copy(alpha = ContentAlpha.medium)
+            )
+
+        )
+
+    }
+
+}
+
+@Composable
+@Preview
+fun SearchAppBarPreview(){
+    SearchAppBar(
+        text = "Some random text",
+        onTextChange = {},
+        onCloseClicked = {},
+        onSearchClicked = {}
     )
 }
 
@@ -142,6 +341,8 @@ private fun DrawerContent(
             NavigationListItem(item = item){
                 navController.navigate(item.Route){
                     launchSingleTop = true
+                    screenActual = item.Route
+
                 }
                 scope.launch {
                     scaffoldState.drawerState.close()
