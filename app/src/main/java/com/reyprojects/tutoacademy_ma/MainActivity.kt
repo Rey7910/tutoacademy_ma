@@ -69,7 +69,7 @@ import org.json.JSONObject
 var profile = false
 var current_user by mutableStateOf<UserInput?>(null)
 var current_profile by mutableStateOf<ProfileInput?>(null)
-val urlGraph = "https://31c2-190-250-160-36.ngrok-free.app/graphql"
+val urlGraph = "https://07f1-2800-484-5c7e-8700-ccec-bd90-e934-fe40.ngrok-free.app/graphql"
 var jsonProfile = ""
 var navegated_profile = false
 class MainActivity : ComponentActivity() {

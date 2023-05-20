@@ -22,6 +22,22 @@
           }
         },
         {
+          "client_id": "323525790152-7drmtcerk9hah5e27i1mg7ovlthh5ikh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reyprojects.tutoacademy_ma",
+            "certificate_hash": "4bb95af77000291ae849ac30a41f02ab6ae9cf84"
+          }
+        },
+        {
+          "client_id": "323525790152-e8i9ojkgq37s20gq4dfmuhfise514k4r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reyprojects.tutoacademy_ma",
+            "certificate_hash": "4e2f1bbaca7091ce22aacf0c7880abb9149bfc38"
+          }
+        },
+        {
           "client_id": "323525790152-hcd861ki1ffoeian63vbhvilouj9skou.apps.googleusercontent.com",
           "client_type": 3
         }

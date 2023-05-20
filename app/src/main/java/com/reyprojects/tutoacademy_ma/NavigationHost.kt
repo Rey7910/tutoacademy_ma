@@ -16,7 +16,7 @@ fun  NavigationHost ( navController: NavHostController){
             Initio(navController)
         }
         composable(Pantalla2.ruta){
-            Profile(navController)
+            Profile(navController, jsonProfile)
         }
         composable(Pantalla3.ruta){
             Mi_Tutoria(navController)

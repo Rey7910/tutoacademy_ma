@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -42,10 +43,10 @@ var degreeProfile = "loaded"
 var birthdateProfile = "loaded"
 
 @Composable
-fun Profile(navController: NavHostController){
-    Log.d("Json profile", jsonProfile)
+fun Profile(navController: NavHostController, profile: String){
+    Log.d("Json profile", profile)
     try{
-        val jsonObjectGeneral = JSONObject(jsonProfile)
+        val jsonObjectGeneral = JSONObject(profile)
         val jsonObject = jsonObjectGeneral.getJSONObject("getProfile")
         fullnameProfile = jsonObject.getString("fullname")
         genderProfile = jsonObject.getString("gender")
@@ -60,16 +61,21 @@ fun Profile(navController: NavHostController){
 
 
     Column(
-        modifier = Modifier.padding(20.dp).verticalScroll(rememberScrollState())
+        modifier = Modifier
+            .padding(20.dp)
+            .verticalScroll(rememberScrollState())
 
     ){
         ProfileImageAndName(current_user?.givenName.toString())
         Spacer(modifier = Modifier.height(20.dp))
         ProfileInfo()
         Spacer(modifier = Modifier.height(10.dp))
-        ProfileSkills(skills = "Crear Tuto Perfil \uD83D\uDE0E")
-        Spacer(modifier = Modifier.height(10.dp))
-        ProfileTutoringSchedule(schedule = "Lunes 4pm-6pm")
+
+        Button(onClick = { /* */ }) {
+            Text(text = "¿Quieres convertirte en tutor?")
+        }
+
+
     }
 
 
