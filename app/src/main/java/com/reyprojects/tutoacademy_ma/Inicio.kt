@@ -57,7 +57,6 @@ fun Initio(navHostController: NavHostController){
     getProfiles()
     getServices()
 
-    Log.d("Perfiles ", jsonAllProfiles.toString())
 
     sampleEvents.clear()
 

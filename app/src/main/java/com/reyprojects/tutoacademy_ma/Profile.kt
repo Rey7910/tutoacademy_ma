@@ -52,21 +52,34 @@ fun Profile(navController: NavHostController, userId: String){
 
 
 
-    getSingleProfile(userId)
+    var profile = ""
 
-    Log.d("UserId", jsonSingleProfile.toString())
+    if (userId == current_user?.googleId){
+
+        val temp = jsonProfile
+        val getProfile = JSONObject(temp)
+        val jsonObjectGeneral = getProfile.getJSONObject("getProfile")
+        profile = jsonObjectGeneral.toString()
+
+    } else{
+
+        jsonAllProfiles?.get("allProfiles")?.asJsonArray?.forEach { item ->
+            val googleId =
+                item?.asJsonObject?.get("userID")?.asJsonObject?.get("googleId")?.asString
 
 
+            if (googleId.equals(userId)) {
 
+                profile = item.asJsonObject.toString()
+            }
 
-    val profile = jsonSingleProfile.toString()
-
-
+        }
+    }
 
 
     try{
-        val jsonObjectGeneral = JSONObject(profile)
-        val jsonObject = jsonObjectGeneral.getJSONObject("getProfile")
+        val jsonObject = JSONObject(profile)
+
         fullnameProfile = jsonObject.getString("fullname")
         genderProfile = jsonObject.getString("gender")
         nationalityProfile = jsonObject.getString("nationality")
@@ -77,8 +90,6 @@ fun Profile(navController: NavHostController, userId: String){
         Url = jsonObject.getJSONObject("userID").getString("imageUrl")
         userIdSearchProfile =  jsonObject.getJSONObject("userID").getString("googleId")
 
-        Log.d("googleidSearched", userIdSearchProfile)
-        Log.d("myUserId", current_user?.googleId.toString())
 
     }catch(e: Exception){
         Log.d("Error Parsing Profile",e.toString())
@@ -98,14 +109,14 @@ fun Profile(navController: NavHostController, userId: String){
 
         //Check if the logged user is seeing his profile
         if (current_user?.googleId == userId) {
-            Log.d("All Services content", jsonServices.toString())
+
             val allServices = jsonServices.get("allServices")?.asJsonArray
             var isTutor = false
             var myService = ""
 
             allServices?.forEach loop@{ item ->
                 val currentGoogleId = item?.asJsonObject?.get("idProfile")?.asJsonObject?.get("userID")?.asJsonObject?.get("googleId")?.asString?.replace("\"", "")
-                Log.d("One service content", item.toString())
+
 
                 //Check if the user logged is a tutor
                 if (userId == currentGoogleId) {

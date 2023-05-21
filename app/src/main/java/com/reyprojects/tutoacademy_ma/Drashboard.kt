@@ -370,7 +370,10 @@ private fun NavigationListItem(
             if((item.Route == Destinos.Pantalla4.ruta ||  item.Route == Destinos.Pantalla2.ruta || item.Route == Destinos.Pantalla3.ruta)  && jsonProfile.length<=2 && profile==false){
                 item.Route = Destinos.Pantalla6.ruta
             }else if(item.Route == Destinos.Pantalla6.ruta && jsonProfile.length>2 && profile==false ){
-                if(item.label == "Perfiles") item.Route = Destinos.Pantalla2.ruta
+                if(item.label == "Perfiles") {
+                    item.Route = Destinos.Pantalla2.ruta
+                    current_user?.googleId?.let { getSingleProfile(it) }
+                }
                 if(item.label == "Mis tutorias") item.Route = Destinos.Pantalla3.ruta
                 if(item.label == "Chats") item.Route = Destinos.Pantalla4.ruta
                 profile = true

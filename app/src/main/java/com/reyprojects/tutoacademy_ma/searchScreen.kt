@@ -32,8 +32,6 @@ import coil.compose.rememberImagePainter
 @Composable
 fun SearchScreen(navController: NavHostController, mainViewModel: MainViewModel){
 
-
-    Log.d("Searched Text", search)
     val allProfiles = jsonAllProfiles?.get("allProfiles")?.asJsonArray
 
     LazyColumn(){
@@ -50,13 +48,6 @@ fun SearchScreen(navController: NavHostController, mainViewModel: MainViewModel)
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-
-                                if (googleId != null) {
-                                    getSingleProfile(googleId)
-                                }
-                                //getAllChats(googleId.toString())
-
-
 
 
 
