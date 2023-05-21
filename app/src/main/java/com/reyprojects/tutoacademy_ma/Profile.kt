@@ -121,7 +121,7 @@ fun Profile(navController: NavHostController, userId: String){
             } else {
                 TurnToTutor()
             }
-        } else {
+        } else if(userId !in currentContacts){
             Button(onClick = {
                 newChatBoolean = true
                 currentNewChatReceiver = userIdSearchProfile
@@ -133,6 +133,14 @@ fun Profile(navController: NavHostController, userId: String){
                 Text(text = "Enviar mensaje")
             }
 
+        }else{
+            Button(onClick = {
+
+                navController.navigate(Destinos.Pantalla4.ruta)
+            },
+                modifier = Modifier.fillMaxWidth()) {
+                Text(text = "Ya están en tus contactos \uD83D\uDE0A")
+            }
         }
 
 

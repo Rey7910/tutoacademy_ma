@@ -78,6 +78,8 @@ var chat_global by mutableStateOf<AvailableChat?>(null)
 val messages = mutableListOf<Message>()
 var currentNewChatReceiver = ""
 
+val currentContacts: MutableList<String> = mutableListOf()
+
 var chatExists = false
 var chatVerifying = false
 
@@ -94,7 +96,7 @@ fun Chats(navController: NavHostController){
 
 
     AvailableChats.clear()
-
+    currentContacts.clear()
     try{
         Log.d("Chat Tuto","Everything good")
 
@@ -140,9 +142,11 @@ fun Chats(navController: NavHostController){
             if(id_sender!= current_user?.googleId.toString()){
                 val chat = AvailableChat(id_sender, fullname_sender, image_sender)
                 AvailableChats.add(chat)
+                currentContacts.add(id_sender)
             }else{
                 val chat = AvailableChat(id_receiver, fullname_receiver, image_receiver)
                 AvailableChats.add(chat)
+                currentContacts.add(id_receiver)
             }
 
         }
