@@ -54,6 +54,12 @@ fun SearchScreen(navController: NavHostController, mainViewModel: MainViewModel)
                                 if (googleId != null) {
                                     getSingleProfile(googleId)
                                 }
+                                //getAllChats(googleId.toString())
+
+
+
+
+
                                 navController.navigate("${Destinos.Pantalla2.ruta}/${googleId}")
 
 

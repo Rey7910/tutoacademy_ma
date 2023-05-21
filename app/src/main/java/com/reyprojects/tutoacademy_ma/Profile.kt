@@ -18,11 +18,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +38,7 @@ var nationalityProfile = "loaded"
 var descriptionProfile = "loaded"
 var degreeProfile = "loaded"
 var birthdateProfile = "loaded"
+var userIdSearchProfile = ""
 var jsonSingleProfile = JsonObject()
 var Url = ""
 
@@ -74,12 +70,14 @@ fun Profile(navController: NavHostController, userId: String){
         birthdateProfile = jsonObject.getString("birthdate")
 
         Url = jsonObject.getJSONObject("userID").getString("imageUrl")
+        userIdSearchProfile =  jsonObject.getJSONObject("userID").getString("googleId")
 
+        Log.d("googleidSearched", userIdSearchProfile)
+        Log.d("myUserId", current_user?.googleId.toString())
 
     }catch(e: Exception){
         Log.d("Error Parsing Profile",e.toString())
     }
-
 
 
     Column(
@@ -111,6 +109,28 @@ fun Profile(navController: NavHostController, userId: String){
                 TurnToTutor()
             }
         }
+        if(userIdSearchProfile== current_user?.googleId.toString()){
+            Button(onClick = { /* */ },
+                modifier = Modifier.fillMaxWidth()) {
+                Text(text = "¿Quieres convertirte en tutor?")
+            }
+        }else{
+            Button(onClick = {
+                newChatBoolean = true
+                currentNewChatReceiver = userIdSearchProfile
+                new_chat = AvailableChat(userIdSearchProfile,fullnameProfile, Url)
+                navController.navigate(Destinos.Pantalla5.ruta)
+
+            },
+                modifier = Modifier.fillMaxWidth()) {
+                Text(text = "Enviar mensaje")
+            }
+
+        }
+
+
+
+
     }
 
 

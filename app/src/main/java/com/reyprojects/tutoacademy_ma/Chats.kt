@@ -66,7 +66,8 @@ import kotlinx.coroutines.delay
 
 
 var Chats:String= ""
-
+var newChatBoolean = false
+var new_chat by mutableStateOf<AvailableChat?>(null)
 
 data class Message(val text: String, val sender: String)
 data class AvailableChat(val googleid: String, val fullname: String, val image: String)
@@ -75,27 +76,10 @@ val AvailableChats = mutableListOf<AvailableChat>()
 var chat_global by mutableStateOf<AvailableChat?>(null)
 
 val messages = mutableListOf<Message>()
+var currentNewChatReceiver = ""
 
-
-@OptIn(DelicateCoroutinesApi::class)
-fun getAllChats(id: String) = GlobalScope.async {
-    try{
-        val apolloClient = ApolloClient.Builder()
-            .serverUrl(urlGraph)
-            .build()
-        Log.d("Tuto","client builded well")
-        val response = apolloClient.query(GetChatUserQuery(id)).execute()
-        val gson = Gson()
-        val json = gson.toJson(response.data)
-        Log.d("Query Response",response.data.toString())
-        Log.d("Query Conversion",json)
-        Chats = json
-
-    }catch (e: ApolloException){
-        Log.d("Query Response",e.toString())
-    }
-
-}
+var chatExists = false
+var chatVerifying = false
 
 
 
@@ -277,33 +261,47 @@ fun ChatContent(navController: NavHostController){
 
     var shouldReload by remember { mutableStateOf(true) }
 
-    LaunchedEffect(shouldReload) {
-        while (true) {
-            delay(5000)
-            reloadInside()
-            chargeMessagesInside(chat_global)
-            shouldReload = !shouldReload
+
+
+    if(!newChatBoolean){
+        LaunchedEffect(shouldReload) {
+            while (true) {
+                delay(5000)
+                reloadInside()
+                chargeMessagesInside(chat_global)
+                shouldReload = !shouldReload
+            }
         }
     }
+
+
     Column{
 
-        headerChat(chat_global, navController)
+        if(!newChatBoolean){
+            headerChat(chat_global, navController)
+        }else{
+            headerChat(new_chat , navController)
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
         LazyColumn(
             state = scrollState,
             modifier = Modifier.weight(1f),
             reverseLayout = true // Muestra los elementos en orden inverso
         ) {
-            items(messages) { message ->
-                if(message.sender=="sender"){
-                    senderMessage(message = message.text)
-                }else{
-                    receiverMessage(message = message.text)
+            if(!newChatBoolean){
+                items(messages) { message ->
+                    if(message.sender=="sender"){
+                        senderMessage(message = message.text)
+                    }else{
+                        receiverMessage(message = message.text)
+                    }
                 }
             }
+
         }
 
-        sendButton(modifier = Modifier
+        sendButton(navController,modifier = Modifier
             .align(Alignment.End) // Alinea el botón en la esquina inferior derecha
             .padding(30.dp) // Añade un margen al botón
             .clip(CircleShape) // Agrega una forma circular al botón
@@ -457,7 +455,7 @@ fun headerChat(chat: AvailableChat?, navController: NavHostController){
 }
 
 @Composable
-fun sendButton(modifier: Modifier) {
+fun sendButton(navController: NavHostController,modifier: Modifier) {
     Box(modifier = Modifier
 
         .padding(16.dp)
@@ -479,9 +477,31 @@ fun sendButton(modifier: Modifier) {
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = {
+                    if(!newChatBoolean){
+                        addMessage(text.text)
+                        text = TextFieldValue("")
+                    }else{
 
-                    addMessage(text.text)
-                    text = TextFieldValue("")
+                        val message = MessageSchemaInput(
+                            sender = Optional.present(current_user?.googleId.toString()),
+                            body = Optional.present(text.text)
+                        )
+
+                        val messagesNewChat = mutableListOf<MessageSchemaInput>()
+                        messagesNewChat.add(message)
+
+                        val newChatInput = ChatInput(
+                            sender = Optional.present(current_user?.googleId.toString()),
+                            receiver = Optional.present(currentNewChatReceiver),
+                            messages = Optional.present(messagesNewChat)
+
+                        )
+                        newChatBoolean=false
+                        createChat(newChatInput)
+                        text = TextFieldValue("")
+                        navController.navigate(Destinos.Pantalla4.ruta)
+                    }
+
 
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -665,3 +685,4 @@ fun addMessage(message: String) = GlobalScope.async {
     }
 
 }
+

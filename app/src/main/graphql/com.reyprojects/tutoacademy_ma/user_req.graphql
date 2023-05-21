@@ -65,8 +65,8 @@ query allProfiles{
         skills{skillname, score}
         schedule{day, hours}
     }
-}
 
+}
 query getProfile($id: String!){
     getProfile(id: $id){
         userID{
@@ -76,7 +76,6 @@ query getProfile($id: String!){
             createdAt
             updatedAt
         }
-
         fullname
         gender
         birthdate
