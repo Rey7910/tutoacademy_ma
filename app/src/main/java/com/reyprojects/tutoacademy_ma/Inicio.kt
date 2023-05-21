@@ -44,7 +44,9 @@ import java.time.LocalDateTime
 
 
 var jsonRequest = JsonObject()
+var jsonServices = JsonObject()
 val sampleEvents = mutableListOf<Event>()
+
 @SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -53,6 +55,7 @@ fun Initio(navHostController: NavHostController){
 
     getRequests()
     getProfiles()
+    getServices()
 
     Log.d("Perfiles ", jsonAllProfiles.toString())
 

@@ -9,12 +9,56 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.reyprojects.tutoacademy_ma.type.ProfileInput
 import com.reyprojects.tutoacademy_ma.type.Request
+import com.reyprojects.tutoacademy_ma.type.ServiceInput
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
 import java.time.DayOfWeek
 import java.time.LocalDate
+
+fun getServices() = GlobalScope.async {
+
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(urlGraph)
+            .build()
+
+
+        val response = apolloClient.query(AllServicesQuery()).execute()
+
+
+        val gson = Gson()
+        jsonServices = JsonParser.parseString( gson.toJson(response.data)) as JsonObject
+
+
+
+
+    }catch (e: ApolloException){
+        Log.d("Query Services Response",e.toString())
+    }
+
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+fun CreateService(service: ServiceInput) = GlobalScope.async {
+
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(urlGraph)
+            .build()
+        Log.d("Tuto","client builded well")
+
+        val response = apolloClient.mutation(CreateServiceMutation(service)).execute()
+        Log.d("Mutation Create Service",response.data.toString())
+
+    }catch (e: ApolloException){
+        Log.d("New Service Response",e.toString())
+    }
+
+}
 
 
 fun getRequests() = GlobalScope.async {
@@ -35,7 +79,7 @@ fun getRequests() = GlobalScope.async {
 
 
     }catch (e: ApolloException){
-        Log.d("Query Profile Response",e.toString())
+        Log.d("Query Request Response",e.toString())
     }
 
 }
@@ -59,7 +103,7 @@ fun getProfiles() = GlobalScope.async {
 
 
     }catch (e: ApolloException){
-        Log.d("Query Profile Response",e.toString())
+        Log.d("Query Profiles Response",e.toString())
     }
 
 }
