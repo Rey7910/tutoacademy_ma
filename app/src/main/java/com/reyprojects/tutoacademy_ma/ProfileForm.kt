@@ -174,7 +174,7 @@ fun profile_ss(navHostController: NavHostController){
                 Thread.sleep(4000)
                 jsonProfile="Waiting for being assigned"
                 getProfile(current_user?.googleId.toString())
-
+                getProfiles()
                 Thread.sleep(3000)
                 navHostController.navigate("pantalla1")
 

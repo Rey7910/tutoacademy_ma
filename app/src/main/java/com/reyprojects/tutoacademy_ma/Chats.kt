@@ -501,6 +501,7 @@ fun sendButton(navController: NavHostController,modifier: Modifier) {
 
                         )
                         newChatBoolean=false
+
                         createChat(newChatInput)
                         text = TextFieldValue("")
                         navController.navigate(Destinos.Pantalla4.ruta)
@@ -690,3 +691,7 @@ fun addMessage(message: String) = GlobalScope.async {
 
 }
 
+suspend fun createChatOperation(newChatInput: ChatInput) {
+    createChat(newChatInput)
+
+}

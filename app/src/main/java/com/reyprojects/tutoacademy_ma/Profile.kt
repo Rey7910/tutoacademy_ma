@@ -50,7 +50,7 @@ var Url = ""
 @Composable
 fun Profile(navController: NavHostController, userId: String){
 
-
+    Log.d("PROFILE","go to profile")
 
     var profile = ""
 
