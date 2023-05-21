@@ -50,7 +50,7 @@ fun missingProfile(navHostController: NavHostController){
         Spacer(modifier = Modifier.height(40.dp))
 
         Text(
-            text = "Aún no haz configurado tú perfil",
+            text = "Aún no has configurado tú perfil",
             fontSize = 23.sp,
             color = Color.Black,
             textAlign = TextAlign.Center ,

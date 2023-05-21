@@ -43,6 +43,8 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import coil.compose.rememberImagePainter
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.gson.JsonObject
 
 var search = ""
@@ -50,7 +52,7 @@ var jsonAllProfiles = JsonObject()
 var screenActual = ""
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PantallaPrincipal(mainViewModel: MainViewModel){
+fun PantallaPrincipal(mainViewModel: MainViewModel, onLogout: () -> Unit){
 
     val searchWidgetState by mainViewModel.searchWidgetState
     val searchTextState by mainViewModel.searchTextState
@@ -108,7 +110,8 @@ fun PantallaPrincipal(mainViewModel: MainViewModel){
         drawerContent = {  DrawerContent(
             scope,
             scaffoldState,
-            navController
+            navController,
+            onLogout
         )
         },
         backgroundColor = colorResource(id = R.color.background)
@@ -295,7 +298,8 @@ fun SearchAppBarPreview(){
 private fun DrawerContent(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
-    navController: NavHostController
+    navController: NavHostController,
+    onLogout: () -> Unit
 ) {
     var itemsList = prepareNavigationDrawerItems()
 
@@ -352,6 +356,11 @@ private fun DrawerContent(
                     scaffoldState.drawerState.close()
                 }
             }
+        }
+        item {
+
+          logoutButton(onLogout = onLogout)
+
         }
     }
 }
@@ -444,14 +453,6 @@ private fun prepareNavigationDrawerItems(): List<NavigationDrawerItem> {
             image = painterResource(id = Destinos.Pantalla4.image),
             label = Destinos.Pantalla4.title,
             Route = Destinos.Pantalla4.ruta
-        )
-    )
-    itemsList.add(
-        NavigationDrawerItem(
-            image = painterResource(id = R.drawable.logout),
-            label = "Cerrar Sesión",
-
-            Route = "pantalla1"
         )
     )
 
