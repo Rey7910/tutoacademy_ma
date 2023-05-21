@@ -150,7 +150,9 @@ fun loginScreen(
                     getAllChats(current_user?.googleId.toString())
 
                     Log.d("Json object", jsonProfile)
-
+                    getRequests()
+                    getProfiles()
+                    getServices()
                     navController.navigate("home")
                 }catch(e: Exception){
                     Log.d("TutoacademyMa",e.toString())

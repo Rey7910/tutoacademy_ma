@@ -53,9 +53,7 @@ val sampleEvents = mutableListOf<Event>()
 fun Initio(navHostController: NavHostController){
 
 
-    getRequests()
-    getProfiles()
-    getServices()
+
 
 
     sampleEvents.clear()
@@ -153,7 +151,6 @@ fun Initio(navHostController: NavHostController){
 
     }
 
-    Log.d("Lista" , sampleEvents.toString())
 
 
 
