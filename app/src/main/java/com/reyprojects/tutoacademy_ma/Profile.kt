@@ -16,10 +16,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -42,6 +45,7 @@ var nationalityProfile = "loaded"
 var descriptionProfile = "loaded"
 var degreeProfile = "loaded"
 var birthdateProfile = "loaded"
+var userIdSearchProfile = ""
 var jsonSingleProfile = JsonObject()
 var Url = ""
 @Composable
@@ -72,12 +76,14 @@ fun Profile(navController: NavHostController, userId: String){
         birthdateProfile = jsonObject.getString("birthdate")
 
         Url = jsonObject.getJSONObject("userID").getString("imageUrl")
+        userIdSearchProfile =  jsonObject.getJSONObject("userID").getString("googleId")
 
+        Log.d("googleidSearched", userIdSearchProfile)
+        Log.d("myUserId", current_user?.googleId.toString())
 
     }catch(e: Exception){
         Log.d("Error Parsing Profile",e.toString())
     }
-
 
 
     Column(
@@ -91,9 +97,26 @@ fun Profile(navController: NavHostController, userId: String){
         ProfileInfo()
         Spacer(modifier = Modifier.height(10.dp))
 
-        Button(onClick = { /* */ }) {
-            Text(text = "¿Quieres convertirte en tutor?")
+        if(userIdSearchProfile== current_user?.googleId.toString()){
+            Button(onClick = { /* */ },
+                modifier = Modifier.fillMaxWidth()) {
+                Text(text = "¿Quieres convertirte en tutor?")
+            }
+        }else{
+            Button(onClick = {
+                newChatBoolean = true
+                currentNewChatReceiver = userIdSearchProfile
+                new_chat = AvailableChat(userIdSearchProfile,fullnameProfile, Url)
+                navController.navigate(Destinos.Pantalla5.ruta)
+
+            },
+                modifier = Modifier.fillMaxWidth()) {
+                Text(text = "Enviar mensaje")
+            }
+
         }
+
+
 
 
     }

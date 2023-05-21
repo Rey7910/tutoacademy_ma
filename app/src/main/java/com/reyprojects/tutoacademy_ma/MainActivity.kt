@@ -69,7 +69,7 @@ import org.json.JSONObject
 var profile = false
 var current_user by mutableStateOf<UserInput?>(null)
 var current_profile by mutableStateOf<ProfileInput?>(null)
-val urlGraph = "https://c94b-190-250-160-36.ngrok-free.app/graphql"
+val urlGraph = "https://027d-186-84-88-227.ngrok-free.app/graphql"
 var jsonProfile = ""
 var navegated_profile = false
 class MainActivity : ComponentActivity() {
@@ -100,43 +100,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(DelicateCoroutinesApi::class)
-fun login(user: UserInput) = GlobalScope.async {
-    try{
-        val apolloClient = ApolloClient.Builder()
-            .serverUrl(urlGraph)
-            .build()
-        Log.d("Tuto","client builded well")
-        //val response = apolloClient.query(GetUsersQuery()).execute()
-        val response = apolloClient.mutation(LoginUserMutation(user)).execute()
-        Log.d("Query Login Response",response.data.toString())
-    }catch (e: ApolloException){
-        Log.d("Query Login Response",e.toString())
-    }
-
-}
-
-@OptIn(DelicateCoroutinesApi::class)
-fun getProfile(googleid: String) = GlobalScope.async {
-
-    try{
-        val apolloClient = ApolloClient.Builder()
-            .serverUrl(urlGraph)
-            .build()
-        Log.d("Tuto","client builded well")
-
-        val response = apolloClient.query(GetProfileQuery(googleid)).execute()
-        Log.d("Query Profile Response",response.data.toString())
-
-        val gson = Gson()
-        jsonProfile = gson.toJson(response.data)
-        Log.d("Json loaded", jsonProfile)
-
-    }catch (e: ApolloException){
-        Log.d("Query Profile Response",e.toString())
-    }
-
-}
 
 
 
