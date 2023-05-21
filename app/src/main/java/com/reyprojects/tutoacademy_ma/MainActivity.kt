@@ -66,7 +66,7 @@
     import com.reyprojects.tutoacademy_ma.type.UserInput
     import org.json.JSONObject
 
-    var profile = false
+    var profilebooelan = false
     var current_user by mutableStateOf<UserInput?>(null)
     var current_profile by mutableStateOf<ProfileInput?>(null)
     val urlGraph = "https://6d43-190-250-160-36.ngrok-free.app/graphql"
@@ -123,7 +123,7 @@
         }
         private fun logout(navController: NavHostController) {
             isUserLoggedIn = false
-            profile = false
+            profilebooelan = false
             current_user = null
             current_profile = null
             jsonProfile = ""

@@ -66,6 +66,7 @@ fun PantallaPrincipal(mainViewModel: MainViewModel, onLogout: () -> Unit){
 
 
 
+
     Scaffold(
 
         scaffoldState = scaffoldState,
@@ -346,15 +347,31 @@ private fun DrawerContent(
         }
 
         items(itemsList) { item ->
-            NavigationListItem(item = item){
-                navController.navigate(item.Route){
-                    launchSingleTop = true
-                    screenActual = item.Route
 
+            if (profilebooelan){
+                NavigationListItem(item = item) {
+                    navController.navigate(item.Route) {
+                        launchSingleTop = true
+                        screenActual = item.Route
+
+                    }
+                    scope.launch {
+                        scaffoldState.drawerState.close()
+                    }
                 }
-                scope.launch {
-                    scaffoldState.drawerState.close()
-                }
+            } else {
+
+                NavigationListItem(item = item){
+                    navController.navigate("pantalla6"){
+                        launchSingleTop = true
+                        screenActual = item.Route
+
+                    }
+                    scope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+            }
+
             }
         }
         item {
@@ -380,17 +397,6 @@ private fun NavigationListItem(
             .clickable {
             },
         onClick = {
-
-            if((item.Route == Destinos.Pantalla4.ruta ||  item.Route == Destinos.Pantalla2.ruta || item.Route == Destinos.Pantalla3.ruta)  && jsonProfile.length<=2 && profile==false){
-                item.Route = Destinos.Pantalla6.ruta
-            }else if(item.Route == Destinos.Pantalla6.ruta && jsonProfile.length>2 && profile==false ){
-                if(item.label == "Perfiles") {
-                    item.Route = Destinos.Pantalla2.ruta
-                }
-                if(item.label == "Mis tutorias") item.Route = Destinos.Pantalla3.ruta
-                if(item.label == "Chats") item.Route = Destinos.Pantalla4.ruta
-                profile = true
-            }
 
             onItemClick( item )
         }

@@ -52,16 +52,25 @@ val sampleEvents = mutableListOf<Event>()
 @Composable
 fun Initio(navHostController: NavHostController){
 
+    jsonAllProfiles?.get("allProfiles")?.asJsonArray?.forEach { item ->
+        val googleId =
+            item?.asJsonObject?.get("userID")?.asJsonObject?.get("googleId")?.asString
 
+
+
+        if (googleId.equals(current_user?.googleId)) {
+
+            profilebooelan = true
+        }
+
+    }
 
 
 
     sampleEvents.clear()
 
 
-    if (jsonProfile.isNotEmpty()){
-        profile = true
-    }
+
     val after = jsonRequest.get("allRequests")?.asJsonArray
     after?.forEach{
 
@@ -177,7 +186,7 @@ fun Initio(navHostController: NavHostController){
 
             ) {
 
-                if (profile) {
+                if (profilebooelan) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -239,7 +248,7 @@ fun Initio(navHostController: NavHostController){
                 }
 
 
-                if (!profile) {
+                if (!profilebooelan) {
 
                     Box(
                         modifier = Modifier
