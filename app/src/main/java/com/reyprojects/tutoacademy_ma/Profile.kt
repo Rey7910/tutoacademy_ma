@@ -18,6 +18,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -93,28 +98,30 @@ fun Profile(navController: NavHostController, userId: String){
 
         //Check if the logged user is seeing his profile
         if (current_user?.googleId == userId) {
-            Log.d("Services content", jsonServices.toString())
-            val after = jsonServices.get("allServices")?.asJsonArray
+            Log.d("All Services content", jsonServices.toString())
+            val allServices = jsonServices.get("allServices")?.asJsonArray
             var isTutor = false
-            after?.forEach loop@{ item ->
+            var myService = ""
+
+            allServices?.forEach loop@{ item ->
                 val currentGoogleId = item?.asJsonObject?.get("idProfile")?.asJsonObject?.get("userID")?.asJsonObject?.get("googleId")?.asString?.replace("\"", "")
+                Log.d("One service content", item.toString())
+
                 //Check if the user logged is a tutor
                 if (userId == currentGoogleId) {
                     isTutor = true
+                    var oneServiceDescription = item?.asJsonObject?.get("description")?.asString
+                    myService = oneServiceDescription.toString()
                     return@loop
                 }
             }
 
-            if (!isTutor) {
+            if (isTutor) {
+                ProfileService(myService)
+            } else {
                 TurnToTutor()
             }
-        }
-        if(userIdSearchProfile== current_user?.googleId.toString()){
-            Button(onClick = { /* */ },
-                modifier = Modifier.fillMaxWidth()) {
-                Text(text = "¿Quieres convertirte en tutor?")
-            }
-        }else{
+        } else {
             Button(onClick = {
                 newChatBoolean = true
                 currentNewChatReceiver = userIdSearchProfile
@@ -177,29 +184,13 @@ fun ProfileInfo() {
 }
 
 @Composable
-fun ProfileSkills(skills: String){
+fun ProfileService(skill: String){
     Column(modifier = Modifier
         .background(colorResource(id = R.color.light_orange))
         .padding(15.dp)
         .fillMaxWidth()) {
-        Text("Habilidades: ", fontSize = 20.sp)
-        Text("$skills")
-        Spacer(
-            modifier = Modifier.height(
-                5.dp
-            )
-        )
-    }
-}
-
-@Composable
-fun ProfileTutoringSchedule(schedule: String){
-    Column(modifier = Modifier
-        .background(colorResource(id = R.color.light_orange))
-        .padding(15.dp)
-        .fillMaxWidth()) {
-        Text("Horario de tutorías: ", fontSize = 20.sp)
-        Text("$schedule")
+        Text("Tu servicio: ", fontSize = 20.sp)
+        Text("$skill")
         Spacer(
             modifier = Modifier.height(
                 5.dp
