@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 import coil.compose.rememberImagePainter
 import com.google.gson.JsonObject
 
-
+var search = ""
 var jsonAllProfiles = JsonObject()
 var screenActual = ""
 @RequiresApi(Build.VERSION_CODES.O)
@@ -61,7 +61,7 @@ fun PantallaPrincipal(mainViewModel: MainViewModel){
     val navController = rememberNavController()
 
 
-    
+
 
 
     Scaffold(
@@ -75,6 +75,7 @@ fun PantallaPrincipal(mainViewModel: MainViewModel){
                                     mainViewModel.updateSearchTextState(newValue = it)
                      },
                      onCloseClicked = {
+
                          mainViewModel.updateSearchTextState(newValue = "")
                          mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.CLOSED)
 
@@ -90,12 +91,14 @@ fun PantallaPrincipal(mainViewModel: MainViewModel){
 
                      },
                      onSearchClicked = {
-                                       Log.d("Searched Text", it)
+
+                         search = it
+                         navController.navigate(Destinos.Pantalla8.ruta)
+
                      },
                      onSearchTriggered = {
 
                          mainViewModel.updateSearchWidgetState(newValue = SearchWidgetState.OPENED)
-                         Log.d("Context", navController.toString())
                          navController.navigate(Destinos.Pantalla8.ruta)
                      },
                      scope = scope,
@@ -130,6 +133,7 @@ fun MainAppBar(
     scaffoldState: ScaffoldState
 ){
     when(searchWidgetState){
+
         SearchWidgetState.CLOSED -> {
             TopBar(
                 scope = scope, 

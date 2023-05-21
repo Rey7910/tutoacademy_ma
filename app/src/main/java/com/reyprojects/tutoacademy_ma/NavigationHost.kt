@@ -37,7 +37,7 @@ fun  NavigationHost ( navController: NavHostController){
             profileForm(navController)
         }
         composable(Pantalla8.ruta){
-            SearchScreen(navController)
+            SearchScreen(navController, MainViewModel())
         }
 
 

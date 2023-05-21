@@ -30,9 +30,10 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 
 @Composable
-fun SearchScreen(navController: NavHostController){
+fun SearchScreen(navController: NavHostController, mainViewModel: MainViewModel){
 
 
+    Log.d("Searched Text", search)
     val allProfiles = jsonAllProfiles?.get("allProfiles")?.asJsonArray
 
     LazyColumn(){
@@ -41,23 +42,28 @@ fun SearchScreen(navController: NavHostController){
             element ->
             item {
 
-                val profileImage = element?.asJsonObject?.get("userID")?.asJsonObject?.get("imageUrl")?.asString
-                val googleId = element?.asJsonObject?.get("userID")?.asJsonObject?.get("googleId")?.asString
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            if (googleId != null) {
-                                getSingleProfile(googleId)
-                            }
-                            navController.navigate("${Destinos.Pantalla2.ruta}/${googleId}")
-                        },
+                if (element?.asJsonObject?.get("fullname")?.asString?.contains(search, ignoreCase = true ) == true){
 
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
+                    val profileImage = element?.asJsonObject?.get("userID")?.asJsonObject?.get("imageUrl")?.asString
+                    val googleId = element?.asJsonObject?.get("userID")?.asJsonObject?.get("googleId")?.asString
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+
+                                if (googleId != null) {
+                                    getSingleProfile(googleId)
+                                }
+                                navController.navigate("${Destinos.Pantalla2.ruta}/${googleId}")
 
 
-                ){
+                            },
+
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+
+
+                    ){
 
 
                         Image(
@@ -70,6 +76,9 @@ fun SearchScreen(navController: NavHostController){
 
                         Text( text = "" + element?.asJsonObject?.get("fullname")?.asString)
                     }
+
+                }
+
 
 
 
