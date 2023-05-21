@@ -107,7 +107,11 @@
                                 loginScreen(navController)
                             }
                             composable("home") {
-                                PantallaPrincipal(mainViewModel = MainViewModel(), { logout(navController) })
+                                PantallaPrincipal(mainViewModel = MainViewModel()) {
+                                    logout(
+                                        navController
+                                    )
+                                }
                             }
                         }
 

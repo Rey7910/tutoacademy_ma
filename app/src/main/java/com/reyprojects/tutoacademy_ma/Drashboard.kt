@@ -358,9 +358,14 @@ private fun DrawerContent(
             }
         }
         item {
+            var drawerItem = NavigationDrawerItem(
+                image = painterResource(id = R.drawable.logout),
+                label = "Cerrar Sesión",
 
-          logoutButton(onLogout = onLogout)
+                Route = "login"
+            )
 
+            NavigationListItem(item = drawerItem, onItemClick = {onLogout() })
         }
     }
 }
@@ -381,7 +386,6 @@ private fun NavigationListItem(
             }else if(item.Route == Destinos.Pantalla6.ruta && jsonProfile.length>2 && profile==false ){
                 if(item.label == "Perfiles") {
                     item.Route = Destinos.Pantalla2.ruta
-                    current_user?.googleId?.let { getSingleProfile(it) }
                 }
                 if(item.label == "Mis tutorias") item.Route = Destinos.Pantalla3.ruta
                 if(item.label == "Chats") item.Route = Destinos.Pantalla4.ruta
