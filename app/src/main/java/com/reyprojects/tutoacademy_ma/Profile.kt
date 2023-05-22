@@ -132,27 +132,54 @@ fun Profile(navController: NavHostController, userId: String){
             } else {
                 TurnToTutor()
             }
-        } else if(userId !in currentContacts){
-            Button(onClick = {
-                newChatBoolean = true
-                currentNewChatReceiver = userIdSearchProfile
-                new_chat = AvailableChat(userIdSearchProfile,fullnameProfile, Url)
-                navController.navigate(Destinos.Pantalla5.ruta)
+        } else {
 
-            },
-                modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Enviar mensaje")
+            //Show profile service
+            val allServices = jsonServices.get("allServices")?.asJsonArray
+            var isTutor = false
+            var myService = ""
+
+            allServices?.forEach loop@{ item ->
+                val currentGoogleId = item?.asJsonObject?.get("idProfile")?.asJsonObject?.get("userID")?.asJsonObject?.get("googleId")?.asString?.replace("\"", "")
+
+                //Check if the profile is a tutor
+                if (userId == currentGoogleId) {
+                    isTutor = true
+                    var oneServiceDescription = item?.asJsonObject?.get("description")?.asString
+                    myService = oneServiceDescription.toString()
+                    return@loop
+                }
             }
 
-        }else{
-            Button(onClick = {
+            //Schedule meeting
+            if (isTutor) {
+                ProfileService(myService)
+                scheduleTutoring(navController)
+            }
 
-                navController.navigate(Destinos.Pantalla4.ruta)
-            },
-                modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Ya están en tus contactos \uD83D\uDE0A")
+            if(userId !in currentContacts){
+                Button(onClick = {
+                    newChatBoolean = true
+                    currentNewChatReceiver = userIdSearchProfile
+                    new_chat = AvailableChat(userIdSearchProfile,fullnameProfile, Url)
+                    navController.navigate(Destinos.Pantalla5.ruta)
+
+                },
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text(text = "Enviar mensaje")
+                }
+
+            }else{
+                Button(onClick = {
+
+                    navController.navigate(Destinos.Pantalla4.ruta)
+                },
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text(text = "Ya están en tus contactos \uD83D\uDE0A")
+                }
             }
         }
+
 
 
 
@@ -188,7 +215,7 @@ fun ProfileInfo() {
             .background(colorResource(id = R.color.light_orange))
             .padding(15.dp)
             .fillMaxWidth()) {
-            Text("Tu información:", fontSize = 20.sp)
+            Text("Información:", fontSize = 20.sp)
             Spacer(
                 modifier = Modifier.height(
                     5.dp
@@ -203,13 +230,13 @@ fun ProfileInfo() {
 }
 
 @Composable
-fun ProfileService(skill: String){
+fun ProfileService(service: String){
     Column(modifier = Modifier
         .background(colorResource(id = R.color.light_orange))
         .padding(15.dp)
         .fillMaxWidth()) {
-        Text("Tu servicio: ", fontSize = 20.sp)
-        Text("$skill")
+        Text("Servicio: ", fontSize = 20.sp)
+        Text("$service")
         Spacer(
             modifier = Modifier.height(
                 5.dp
@@ -288,5 +315,15 @@ fun AttemptCreateService(serviceDescription: String) {
 
     }catch(e: Exception){
         Log.d("Create Profile Error",e.toString())
+    }
+}
+
+@Composable
+fun scheduleTutoring(navController: NavHostController) {
+    Button(onClick = {
+        navController.navigate(Destinos.Pantalla9.ruta)
+    },
+        modifier = Modifier.fillMaxWidth()) {
+        Text(text = "Agendar tutoria")
     }
 }

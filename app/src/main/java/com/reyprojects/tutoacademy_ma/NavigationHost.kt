@@ -39,6 +39,9 @@ fun  NavigationHost ( navController: NavHostController){
         composable(Pantalla8.ruta){
             SearchScreen(navController, MainViewModel())
         }
+        composable(Pantalla9.ruta){
+            tutoringForm(navController)
+        }
 
 
 

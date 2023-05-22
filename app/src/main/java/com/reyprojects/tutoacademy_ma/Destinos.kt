@@ -16,7 +16,9 @@ sealed class Destinos(
     object Pantalla6: Destinos(R.drawable.chat, "missing_profile","pantalla6")
     object Pantalla7: Destinos(R.drawable.chat, "profile_form","pantalla7")
 
-    object Pantalla8: Destinos(R.drawable.chat, "Search Screen","pantalla9")
+    object Pantalla8: Destinos(R.drawable.chat, "Search Screen","pantalla8")
+
+    object Pantalla9: Destinos(R.drawable.chat, "Tutoring Form","pantalla9")
 
 
 
