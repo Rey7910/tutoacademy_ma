@@ -69,7 +69,7 @@
     var profilebooelan = false
     var current_user by mutableStateOf<UserInput?>(null)
     var current_profile by mutableStateOf<ProfileInput?>(null)
-    val urlGraph = "https://012e-2800-484-5c7e-8700-6971-e91-722-5150.ngrok-free.app/graphql"
+    val urlGraph = "https://dfd2-200-118-16-118.ngrok-free.app/graphql"
     var jsonProfile = ""
     var navegated_profile = false
 

@@ -299,8 +299,6 @@ fun CreateServiceDialog(
 
 fun AttemptCreateService(serviceDescription: String) {
 
-    var jsonOneService = ""
-
     val service = ServiceInput(
         idProfile = Optional.present(current_user?.googleId.toString()),
         description = Optional.present(serviceDescription),
@@ -310,7 +308,7 @@ fun AttemptCreateService(serviceDescription: String) {
     try{
         CreateService(service)
         Thread.sleep(4000)
-        jsonOneService="Waiting for being assigned"
+        getServices()
         Thread.sleep(3000)
 
     }catch(e: Exception){

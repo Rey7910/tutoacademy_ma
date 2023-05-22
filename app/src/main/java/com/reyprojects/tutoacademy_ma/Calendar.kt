@@ -54,6 +54,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME
 import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
 
@@ -177,6 +178,8 @@ fun BasicEvent(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Details(show:Boolean, event: Event, onConfirm: ()-> Unit){
+    val formatter = DateTimeFormatter.ofPattern("yyyy MM dd");
+
     if (show){
         AlertDialog(
             onDismissRequest = { },
@@ -189,7 +192,7 @@ fun Details(show:Boolean, event: Event, onConfirm: ()-> Unit){
             text = {
                 Column{
                     Text(text = "Nombre del tutor: " + event.tutor)
-                    Text(text = "Fecha de creación:  Aqui va el tema a dictar")
+                    Text(text = "Fecha de creación:  " + event.createdAt.format(formatter))
                     Text(text = "Inicia: " + event.start.format(EventTimeFormatter))
                     Text(text = "Termina: " + event.end.format(EventTimeFormatter))
                     Text(text = "Mensaje: " + event.message)

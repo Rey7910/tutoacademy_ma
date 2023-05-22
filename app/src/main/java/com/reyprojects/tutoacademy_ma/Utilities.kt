@@ -12,6 +12,7 @@ import com.google.gson.JsonParser
 import com.reyprojects.tutoacademy_ma.type.ChatInput
 import com.reyprojects.tutoacademy_ma.type.ProfileInput
 import com.reyprojects.tutoacademy_ma.type.Request
+import com.reyprojects.tutoacademy_ma.type.RequestInput
 import com.reyprojects.tutoacademy_ma.type.UserInput
 import kotlinx.coroutines.DelicateCoroutinesApi
 import com.reyprojects.tutoacademy_ma.type.ServiceInput
@@ -82,6 +83,24 @@ fun getRequests() = GlobalScope.async {
 
     }catch (e: ApolloException){
         Log.d("Query Request Response",e.toString())
+    }
+
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+fun CreateRequest(request: RequestInput) = GlobalScope.async {
+
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(urlGraph)
+            .build()
+        Log.d("Tuto","client builded well")
+
+        val response = apolloClient.mutation(CreateRequestMutation(request)).execute()
+        Log.d("Creation Request",response.data.toString())
+
+    }catch (e: ApolloException){
+        Log.d("CreateRequest Error",e.toString())
     }
 
 }
@@ -165,7 +184,7 @@ fun nearDate(dia: String): LocalDate {
         "jueves" -> DayOfWeek.THURSDAY
         "viernes" -> DayOfWeek.FRIDAY
         "sábado" -> DayOfWeek.SATURDAY
-        "sabado" -> DayOfWeek.WEDNESDAY
+        "sabado" -> DayOfWeek.SATURDAY
         "domingo" -> DayOfWeek.SUNDAY
         else -> throw IllegalArgumentException("Día de la semana no válido")
     }
