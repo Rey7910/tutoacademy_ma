@@ -482,6 +482,11 @@ fun SourceLambdaDialog(
         }
         var stopWalking = false
         var product_walker = -1
+
+        if(length == 0 || length==2){
+            isButtonEnabled=false
+        }
+
         AlertDialog(
 
             onDismissRequest = { onDismiss() },
