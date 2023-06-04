@@ -72,10 +72,9 @@ import java.net.HttpURLConnection
 var profilebooelan = false
 var current_user by mutableStateOf<UserInput?>(null)
 var current_profile by mutableStateOf<ProfileInput?>(null)
-val urlGraph = "https://f84a-186-84-88-227.ngrok-free.app/graphql"
+val urlGraph = "https://tutoacademy-ag-rp-oadjztiq2a-uc.a.run.app/graphql"
 var jsonProfile = ""
 var navegated_profile = false
-
 
 
 

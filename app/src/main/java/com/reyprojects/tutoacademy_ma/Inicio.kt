@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,14 +42,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.google.gson.JsonObject
 import com.reyprojects.tutoacademy_ma.type.Request
+import org.json.JSONObject
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -57,12 +63,21 @@ var jsonRequest = JsonObject()
 var jsonServices = JsonObject()
 val sampleEvents = mutableListOf<Event>()
 var sourceLambdaProducts = ""
+var length = 0
+data class SourceLambdaProduct(val title: String, val image: String, val units: Int, val price:Int)
+
+val AdvertisementProducts = mutableListOf<SourceLambdaProduct>()
+
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Initio(navHostController: NavHostController){
+    Log.d("Products length", length.toString())
+
     getProducts()
+
+
     jsonAllProfiles?.get("allProfiles")?.asJsonArray?.forEach { item ->
         val googleId =
             item?.asJsonObject?.get("userID")?.asJsonObject?.get("googleId")?.asString
@@ -222,6 +237,7 @@ fun Initio(navHostController: NavHostController){
                                 color = Color.Gray,
                                 fontWeight = FontWeight.Light
                             )
+                            advertisingContent()
                         }
                     }
 
@@ -317,7 +333,7 @@ fun Initio(navHostController: NavHostController){
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier=Modifier.height(30.dp))
-                    advertisingContent()
+
 
                 }
 
@@ -330,7 +346,9 @@ fun Initio(navHostController: NavHostController){
 
             Text(text = "Dia del evento: " + event.start.format(DayFormatter), modifier = Modifier.padding(top = 10.dp , bottom = 5.dp, start = 5.dp))
             ShowEvents(event = event)
+
         }
+
 
     }
 
@@ -372,6 +390,7 @@ fun ShowEvents( event: Event ){
                 overflow = TextOverflow.Ellipsis,
             )
         }
+
     }
 }
 
@@ -384,7 +403,8 @@ fun advertisingContent(){
 
     Button(
         onClick = {
-             getProducts()
+             //getProducts()
+
              Log.d("Products: ", sourceLambdaProducts.toString())
              show = true
         },
@@ -406,33 +426,172 @@ fun SourceLambdaDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
+
+
+
+
     if (show) {
+
+        try{
+            Log.d("Products","Parsing")
+
+            val jsonObject = JSONObject(sourceLambdaProducts)
+            val chatsArray = jsonObject.getJSONArray("getSourcelambdaProducts")
+
+            AdvertisementProducts.clear()
+
+            for (i in 0 until chatsArray.length()) {
+                val price= jsonObject.getJSONArray("getSourcelambdaProducts")
+                    .getJSONObject(i)
+                    .getInt("price")
+                Log.d("Price ${i+1}",price.toString())
+                val title = jsonObject.getJSONArray("getSourcelambdaProducts")
+                    .getJSONObject(i)
+                    .getString("title")
+
+                Log.d("title ${i+1}",title.toString())
+                val units = jsonObject.getJSONArray("getSourcelambdaProducts")
+                    .getJSONObject(i)
+                    .getInt("units")
+
+                Log.d("unitsPrice ${i+1}",units.toString())
+                val image = jsonObject.getJSONArray("getSourcelambdaProducts")
+                    .getJSONObject(i)
+                    .getString("image")
+
+                Log.d("image ${i+1}",image.toString())
+
+                AdvertisementProducts.add(SourceLambdaProduct(title,image,units,price))
+
+            }
+            length = AdvertisementProducts.size+2
+
+
+
+
+        }catch(e: Exception){
+            Log.d("error parsing",e.toString())
+
+        }
+
+        var proof by remember { mutableStateOf("hola") }
+        var page by remember { mutableStateOf(1) }
+        var isButtonEnabled by remember { mutableStateOf(true) }
         var textFieldState by remember {
             mutableStateOf("")
         }
-
+        var stopWalking = false
+        var product_walker = -1
         AlertDialog(
+
             onDismissRequest = { onDismiss() },
             confirmButton = {
                 TextButton(onClick = {
 
-                }) {
+
+                    if(stopWalking==false){
+                        Log.d("length", length.toString())
+                        Log.d("Advertisement flag","navigate")
+                        proof = length.toString()
+                        product_walker+=1
+                        page+=1
+
+                    }
+
+
+                },enabled = isButtonEnabled
+                     ) {
                     Text(text = "Siguiente")
                 }
             },
-            title = { Text(text = "Aqui mostraremos los productos")},
+            dismissButton = {
+                TextButton(onClick = {
+
+                    onDismiss()
+                }) {
+                    Text(text = "Cerrar")
+                }
+            },
+            title = { Text(text = "Publicidad")},
             text = {
-                Image(
-                    painterResource(R.drawable.logo),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(197.dp)
-                        .width(272.dp)
-                )
+                Spacer(modifier = Modifier.height(30.dp))
+                Column(){
+                    if(page==1){
+                        Log.d("lenght inside",length.toString())
+
+                        Column(modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally){
+                            Text("")
+                            Image(
+                                painterResource(R.drawable.feature),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .height(141.dp)
+                                    .width(322.dp)
+                            )
+                            Text(text = "En Tuto Academy trabajamos con Source Lambda para traerte lo mejor de sus productos")
+                        }
+
+
+                    }else if(page == length){
+                        stopWalking=true
+                        Column{
+                            Text("")
+                            Image(
+                                painterResource(R.drawable.feature),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .height(141.dp)
+                                    .width(322.dp)
+                            )
+                            Text("Todos estos productos y muchos más los encuentras en Source Lambda")
+                            Spacer(modifier=Modifier.height(10.dp))
+                            Button(onClick = {}){
+                                Text("Ir a Source Lambda")
+                            }
+                            Spacer(modifier=Modifier.height(10.dp))
+                        }
+                        isButtonEnabled=false
+
+                    }else{
+
+                        Column {
+                            Text("")
+                            Image(
+                                rememberImagePainter(AdvertisementProducts[product_walker].image),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .height(197.dp)
+                                    .width(272.dp)
+                            )
+                            Spacer(modifier=Modifier.height(20.dp))
+                            Text(text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Título: ")
+                                }
+                                append(AdvertisementProducts[product_walker].title)
+                            })
+                            Text(text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Precio: ")
+                                }
+                                append(AdvertisementProducts[product_walker].price.toString())
+                            })
+                            Text(text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append("Unidades Disponibles: ")
+                                }
+                                append(AdvertisementProducts[product_walker].units.toString())
+                            })
+
+                        }
+
+                    }
+                }
+
 
             }
         )
     }
 
 }
-
