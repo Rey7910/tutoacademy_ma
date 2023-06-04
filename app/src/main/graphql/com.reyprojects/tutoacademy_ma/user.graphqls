@@ -184,6 +184,15 @@ input messageSchemaInput {
     sendTime: String
 }
 
+# ------------  sourceLambda --------------------
+
+type product {
+    title: String,
+    price: Int,
+    image: String,
+    units: Int
+}
+
 # ------------  Setting Queries and Mutations --------------------
 
 type Query{
@@ -209,6 +218,9 @@ type Query{
     getChats: [chat]
     getChatId(id: Int!): chat
     getChatUser(name: String!): [chat]
+
+    # --------- SourceLambda ----------------
+    getSourcelambdaProducts: [product]
 }
 
 type Mutation{

@@ -3,6 +3,7 @@ package com.reyprojects.tutoacademy_ma
 import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
+import android.widget.Space
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,10 +23,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,12 +56,13 @@ import java.time.LocalDateTime
 var jsonRequest = JsonObject()
 var jsonServices = JsonObject()
 val sampleEvents = mutableListOf<Event>()
+var sourceLambdaProducts = ""
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Initio(navHostController: NavHostController){
-
+    getProducts()
     jsonAllProfiles?.get("allProfiles")?.asJsonArray?.forEach { item ->
         val googleId =
             item?.asJsonObject?.get("userID")?.asJsonObject?.get("googleId")?.asString
@@ -305,7 +316,8 @@ fun Initio(navHostController: NavHostController){
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
-
+                    Spacer(modifier=Modifier.height(30.dp))
+                    advertisingContent()
 
                 }
 
@@ -313,11 +325,13 @@ fun Initio(navHostController: NavHostController){
         }
 
 
+
         items(sampleEvents) { event ->
 
             Text(text = "Dia del evento: " + event.start.format(DayFormatter), modifier = Modifier.padding(top = 10.dp , bottom = 5.dp, start = 5.dp))
             ShowEvents(event = event)
         }
+
     }
 
 
@@ -360,3 +374,65 @@ fun ShowEvents( event: Event ){
         }
     }
 }
+
+@Composable
+fun advertisingContent(){
+
+    var show by rememberSaveable { mutableStateOf(false) }
+
+
+
+    Button(
+        onClick = {
+             getProducts()
+             Log.d("Products: ", sourceLambdaProducts.toString())
+             show = true
+        },
+
+
+    ){
+        Text("Conoce nuestros aliados")
+    }
+    SourceLambdaDialog(show, {show = false},
+        {
+
+            show = false
+        })
+}
+
+@Composable
+fun SourceLambdaDialog(
+    show: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    if (show) {
+        var textFieldState by remember {
+            mutableStateOf("")
+        }
+
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            confirmButton = {
+                TextButton(onClick = {
+
+                }) {
+                    Text(text = "Siguiente")
+                }
+            },
+            title = { Text(text = "Aqui mostraremos los productos")},
+            text = {
+                Image(
+                    painterResource(R.drawable.logo),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .height(197.dp)
+                        .width(272.dp)
+                )
+
+            }
+        )
+    }
+
+}
+

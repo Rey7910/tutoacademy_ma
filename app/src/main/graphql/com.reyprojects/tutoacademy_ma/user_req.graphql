@@ -618,3 +618,14 @@ mutation createChat($chat: chatInput!){
 mutation addMessage($chat: chatInput!){
     addMessage(chat:$chat)
 }
+
+# ------------  SourceLambda --------------------
+
+query getSourcelambdaProducts{
+    getSourcelambdaProducts {
+        title
+        price
+        units
+        image
+    }
+}

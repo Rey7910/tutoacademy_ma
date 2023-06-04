@@ -271,3 +271,26 @@ fun createChat(newChatCreated: ChatInput) = GlobalScope.async {
     }
 
 }
+
+
+@OptIn(DelicateCoroutinesApi::class)
+fun getProducts() = GlobalScope.async {
+
+    try{
+        val apolloClient = ApolloClient.Builder()
+            .serverUrl(urlGraph)
+            .build()
+        Log.d("Tuto","client builded well")
+
+        val response = apolloClient.query(GetSourcelambdaProductsQuery()).execute()
+        Log.d("Query Profile Response",response.data.toString())
+
+        val gson = Gson()
+        sourceLambdaProducts = gson.toJson(response.data)
+        Log.d("Json loaded", jsonProfile)
+
+    }catch (e: ApolloException){
+        Log.d("Query Profile Response",e.toString())
+    }
+
+}
