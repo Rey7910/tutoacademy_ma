@@ -7,6 +7,7 @@ import android.widget.Space
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -562,13 +563,14 @@ fun SourceLambdaDialog(
 
                     }else{
 
-                        Column {
+                        Column( modifier = Modifier
+                            .verticalScroll(rememberScrollState())) {
                             Text("")
                             Image(
                                 rememberImagePainter(AdvertisementProducts[product_walker].image),
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .height(197.dp)
+                                    .height(170.dp)
                                     .width(272.dp)
                             )
 
@@ -601,6 +603,7 @@ fun SourceLambdaDialog(
 
                                 append(AdvertisementProducts[product_walker].units.toString())
                             })
+                            Spacer(modifier=Modifier.height(20.dp))
 
                         }
 
