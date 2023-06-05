@@ -55,8 +55,10 @@ import coil.compose.rememberImagePainter
 import com.google.gson.JsonObject
 import com.reyprojects.tutoacademy_ma.type.Request
 import org.json.JSONObject
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.Locale
 
 
 var jsonRequest = JsonObject()
@@ -569,6 +571,12 @@ fun SourceLambdaDialog(
                                     .height(197.dp)
                                     .width(272.dp)
                             )
+
+                            val format = NumberFormat.getCurrencyInstance(Locale.US)
+
+
+
+
                             Spacer(modifier=Modifier.height(20.dp))
                             Text(text = buildAnnotatedString {
                                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -580,12 +588,17 @@ fun SourceLambdaDialog(
                                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                                     append("Precio: ")
                                 }
-                                append(AdvertisementProducts[product_walker].price.toString())
+
+
+
+                                append(format.format(AdvertisementProducts[product_walker].price).toString())
                             })
                             Text(text = buildAnnotatedString {
                                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                                     append("Unidades Disponibles: ")
                                 }
+
+
                                 append(AdvertisementProducts[product_walker].units.toString())
                             })
 
